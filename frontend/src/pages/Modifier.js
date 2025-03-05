@@ -6,7 +6,7 @@ class Modifier extends Component {
         if (event) {
             event.preventDefault(); 
             var user=[document.getElementById("nom").value,document.getElementById("courriel").value, document.getElementById("postal").value];
-            document.location.href="Magasiner";
+            document.location.href="Parametres";
         }
         }
 
