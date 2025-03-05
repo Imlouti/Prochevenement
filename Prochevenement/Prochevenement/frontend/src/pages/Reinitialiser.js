@@ -6,8 +6,8 @@ class Reinitialiser extends Component {
     async Reinitialiser(event) {
         if (event) {
             event.preventDefault(); 
-            if(document.getElementById("newpassword").value!=document.getElementById("newpasswordagain").value || null){
-                document.getElementById("myDIV").style.display="block";
+            if(document.getElementById("newpassword").value!=document.getElementById("newpasswordagain").value){
+                document.getElementById("hidden").style.display="block";
             }
             else{
             var user=document.getElementById("newpassword").value;
@@ -18,18 +18,18 @@ class Reinitialiser extends Component {
 
     render() { 
         return <div>
-        <img src="comment-choisir-jeux.jpg" ></img>
+                <section id="back">
+                <a href="Oublier" id="img"><img src="fleche.png"></img></a>
+        </section>
         <h1>
         Réinitialiser le mot de passe
         </h1>
         <form onSubmit={this.Reinitialiser}>
-            <input type="text" id="newpassword"/>
-            <br></br>
-            <input type="text" id="newpasswordagain"/>
-                               <br></br>
+            <input type="text" id="newpassword" placeholder="Nouveau mot de passe"/>
+            <input type="text" id="newpasswordagain" placeholder="Mot de passe encore"/>
                         <button id="submit" color="primary" type="submit">Réinitialiser</button>
                 </form>
-        <a id="myDIV">Les mots de passe sont different.</a>
+        <a id="hidden">Les mots de passe sont different.</a>
 
 
 </div>

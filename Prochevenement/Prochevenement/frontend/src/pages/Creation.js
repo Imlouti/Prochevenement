@@ -12,19 +12,17 @@ class Creation extends Component {
 
     render() { 
         return <div>
-        <img src="comment-choisir-jeux.jpg" ></img>
-        <h1>
+                <section id="back">
+        <a href="/" id="img"><img src="fleche.png"></img></a>
+        </section>
+                <h1>
         Creation d’un compte
         </h1>
         <form onSubmit={this.Creation}>
-            <input type="text" id="nom"/>
-            <br></br>
-            <input type="text" id="courriel"/>
-            <br></br>
-            <input type="text" id="postal"/>
-            <br></br>
-            <input type="text" id="password"/>
-                               <br></br>
+        <input type="text" id="nom" placeholder="Nom"/>
+            <input type="text" id="courriel" placeholder="Courriel"/>
+            <input type="text" id="postal" placeholder="Code postale"/>
+            <input type="text" id="password" placeholder="Mot de passe"/>
                         <button id="submit" color="primary" type="submit">Créer le compte</button>
                 </form>
 

@@ -15,7 +15,7 @@ class Acceuil extends Component {
 
     render() { 
         return <div>
-        <img src="comment-choisir-jeux.jpg" ></img>
+        <a><img src="logo.png"></img></a>
         <h1>
         Bienvenue a Prochévénements
         </h1>
@@ -24,7 +24,7 @@ class Acceuil extends Component {
         </h2>
         <Map />
         <form onSubmit={this.Connexion}>
-            <input type="submit" value="Se connecter"/>
+            <input type="submit" id="submit" value="Se connecter"/>
         </form>
         <a href="Creation">Pas de compte? Créer un compte.</a>
 

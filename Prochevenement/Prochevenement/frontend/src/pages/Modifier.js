@@ -5,33 +5,32 @@ class Modifier extends Component {
     async Modifier(event) {
         if (event) {
             event.preventDefault(); 
-            var user=[document.getElementById("nom").value,document.getElementById("courriel").value, document.getElementById("postal").value, document.getElementById("password").value];
+            var user=[document.getElementById("nom").value,document.getElementById("courriel").value, document.getElementById("postal").value];
             document.location.href="Magasiner";
         }
         }
 
     render() { 
         return <div>
-        <img src="comment-choisir-jeux.jpg" ></img>
-        <a href="Magasiner">Magasiner</a>
-        <br></br>
-        <a href="Parametres">Parametres</a>
-        <br></br>
-        <a href="Calendrier">Calendrier</a>
-        <br></br>
-        <a href="Panier">Panier</a>
-        <br></br>
-        <a href="Propos">Propos</a>
+                        <p id="two">
+
+                <section id="back">
+                <a href="Parametres" id="img"><img src="fleche.png"></img></a>
+        </section>
+        <section>
+        <a href="Magasiner" id="img"><img src="acceuil.png"></img></a>
+        <a href="Parametres" id="img"><img src="parametres.png" ></img></a>
+        <a href="Calendrier" id="img"><img src="calendrier.png" ></img></a>
+        <a href="Panier" id="img"><img src="panier.png" ></img></a>
+        <a href="Propos" id="img"><img src="info.png" ></img></a>
+        </section></p>
         <h1>
         Modification
         </h1>
         <form onSubmit={this.Modifier}>
-            <input type="text" id="nom"/>
-            <br></br>
-            <input type="text" id="courriel"/>
-            <br></br>
-            <input type="text" id="postal"/>
-                               <br></br>
+            <input type="text" id="nom" placeholder="Nom"/>
+            <input type="text" id="courriel" placeholder="Courriel"/>
+            <input type="text" id="postal" placeholder="Code postal"/>
                         <button id="submit" color="primary" type="submit">Confirmer</button>
                 </form>
         <a href="Reinitialiser">Reinitialiser le mot de passe</a>

@@ -12,15 +12,14 @@ class Oublier extends Component {
 
     render() { 
         return <div>
-        <img src="comment-choisir-jeux.jpg" ></img>
-        <h1>
+                <section id="back">
+                <a href="Connexion" id="img"><img src="fleche.png"></img></a>
+        </section>        <h1>
         Oublier le mot de passe
         </h1>
         <form onSubmit={this.Connexion}>
-            <input type="text" id="nom"/>
-            <br></br>
-            <input type="text" id="courriel"/>
-                               <br></br>
+            <input type="text" id="nom" placeholder="Nom"/>
+            <input type="text" id="courriel" placeholder="Courriel"/>
                         <button id="submit" color="primary" type="submit">Envoyer un courriel</button>
                 </form>
 

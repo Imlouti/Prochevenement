@@ -3,7 +3,7 @@ import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 
 export default function Map() {
   return (
-    <h1>Va etre une carte, code en dessous</h1>
+    <h3>Va etre une carte, code en dessous</h3>
   );
 }
 

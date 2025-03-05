@@ -13,23 +13,23 @@ class Connexion extends Component {
 
     render() { 
         return <div>
-        <img src="comment-choisir-jeux.jpg" ></img>
+                <section id="back">
+                <a href="/" id="img"><img src="fleche.png"></img></a>
+        </section>
         <h1>
         Connexion
         </h1>
         <form onSubmit={this.Connexion}>
-            <input type="text" id="nom"/>
-            <br></br>
-            <input type="text" id="courriel"/>
-            <br></br>
-            <input type="text" id="password"/>
-                               <br></br>
+            <input type="text" id="nom" placeholder="Nom"/>
+            <input type="text" id="courriel" placeholder="Courriel"/>
+            <input type="text" id="password" placeholder="Mot de passe"/>
                         <button id="submit" color="primary" type="submit">Connexion</button>
                 </form>
+                <p id="two">
 
         <a href="Creation">Pas de compte? Créer un compte.</a>
-        <br></br>
         <a href="Oublier">Oublier le mot de passe</a>
+        </p>
 
 
 </div>

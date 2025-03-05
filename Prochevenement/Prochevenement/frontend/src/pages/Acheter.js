@@ -5,39 +5,36 @@ class Acheter extends Component {
     async Creation(event) {
         if (event) {
             event.preventDefault(); 
-            var user=[document.getElementById("nom").value,document.getElementById("courriel").value, document.getElementById("postal").value, document.getElementById("password").value];
             document.location.href="Magasiner";
         }
         }
     render() { 
         return <div>
-        <a href="Magasiner">Magasiner</a>
-        <br></br>
-        <a href="Parametres">Parametres</a>
-        <br></br>
-        <a href="Calendrier">Calendrier</a>
-        <br></br>
-        <a href="Panier">Panier</a>
-        <br></br>
-        <a href="Propos">Propos</a>
+            <p id="two">
+                <section id="back">
+                <a href="Panier" id="img"><img src="fleche.png"></img></a>
+        </section>
+        <section>
+        <a href="Magasiner" id="img"><img src="acceuil.png"></img></a>
+        <a href="Parametres" id="img"><img src="parametres.png" ></img></a>
+        <a href="Calendrier" id="img"><img src="calendrier.png" ></img></a>
+        <a href="Panier" id="img"><img src="panier.png" ></img></a>
+        <a href="Propos" id="img"><img src="info.png" ></img></a>
+        </section>
+        </p>
 
         <form onSubmit={this.Creation}>
-            <input type="text" id="nom"/>
-            <br></br>
-            <input type="text" id="courriel"/>
-            <br></br>
-            <input type="text" id="numerocarte"/>
-            <br></br>
-            <input type="text" id="expiration"/>
-            <br></br>
-            <input type="text" id="codesecurite"/>
-            <br></br>
-            <input type="text" id="addresse"/>
-                               <br></br>
+            <input type="text" id="nom" placeholder="Nom"/>
+            <input type="text" id="courriel" placeholder="Courriel"/>
+            <input type="text" id="numerocarte" placeholder="Numéro carte crédit"/>
+            <input type="text" id="expiration" placeholder="Expiration"/>
+            <input type="text" id="codesecurite" placeholder="Code de securité"/>
+            <input type="text" id="addresse" placeholder="Addresse"/>
                         <button id="submit" color="primary" type="submit">Confimer
 
 </button>
                 </form>
+
 
 
 

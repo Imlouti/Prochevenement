@@ -5,15 +5,14 @@ class Propos extends Component {
 
     render() { 
         return <div>
-        <a href="Magasiner">Magasiner</a>
-        <br></br>
-        <a href="Parametres">Parametres</a>
-        <br></br>
-        <a href="Calendrier">Calendrier</a>
-        <br></br>
-        <a href="Panier">Panier</a>
-        <br></br>
-        <a href="Propos">Propos</a>
+        <section>
+        <a href="Magasiner" id="img"><img src="acceuil.png"></img></a>
+        <a href="Parametres" id="img"><img src="parametres.png" ></img></a>
+        <a href="Calendrier" id="img"><img src="calendrier.png" ></img></a>
+        <a href="Panier" id="img"><img src="panier.png" ></img></a>
+        <a href="Propos" id="img"><img src="info.png" ></img></a>
+        </section>
+        <a><img src="logo.png"></img></a>
 
         <h1>
         Qui sommes-nous ?

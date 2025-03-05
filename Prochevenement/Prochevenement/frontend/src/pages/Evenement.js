@@ -2,19 +2,29 @@ import React, { Component } from 'react';
 //import './App.css';
 
 class Evenement extends Component {
+  async Creation(event) {
+    if (event) {
+        event.preventDefault(); 
+        document.getElementById("hidden").style.display="block";
+        document.location.href="Magasiner";
+    }
+    }
 
     render() { 
         return <div>
-        <a href="Magasiner">Magasiner</a>
-        <br></br>
-        <a href="Parametres">Parametres</a>
-        <br></br>
-        <a href="Calendrier">Calendrier</a>
-        <br></br>
-        <a href="Panier">Panier</a>
-        <br></br>
-        <a href="Propos">Propos</a>
+                      <p id="two">
 
+                <section id="back">
+                <a href="Magasiner" id="img"><img src="fleche.png"></img></a>
+        </section>
+        <section>
+        <a href="Magasiner" id="img"><img src="acceuil.png"></img></a>
+        <a href="Parametres" id="img"><img src="parametres.png" ></img></a>
+        <a href="Calendrier" id="img"><img src="calendrier.png" ></img></a>
+        <a href="Panier" id="img"><img src="panier.png" ></img></a>
+        <a href="Propos" id="img"><img src="info.png" ></img></a>
+        </section>
+</p>
         <h1>
         Nom de l’événement
                 </h1>
@@ -22,15 +32,13 @@ class Evenement extends Component {
                 Description
                 </h2>
                 <a>Prix</a>
-                    <br></br>
                     <a>Emplacement</a>
-                    <br></br>
                     <a>Date</a>
-                    <br></br>
                     <a>Billets Restant</a>
-                    <br></br>
 
-                    <a href="Magasiner">Ajouter au panier</a>
+                    <button onClick={this.Creation}>Acheter</button>
+
+                    <a id="hidden">Ajouter au panier.</a>
 
 
 
