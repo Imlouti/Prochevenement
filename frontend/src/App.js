@@ -20,6 +20,8 @@ import Vendeur from './pages/Vendeur';
 import ModifierEvenement from './pages/ModifierEvenement';
 import AppercuMagasiner from './pages/AppercuMagasiner';
 import AppercuEvenement from './pages/AppercuEvenement';
+import AjouterEvenement from './pages/AjouterEvenement';
+
 
 
 
@@ -45,6 +47,7 @@ function App() {
         <Route path="/ModifierEvenement" element={<ModifierEvenement/>}/>
         <Route path="/AppercuMagasiner" element={<AppercuMagasiner/>}/>
         <Route path="/AppercuEvenement" element={<AppercuEvenement/>}/>
+        <Route path="/AjouterEvenement" element={<AjouterEvenement/>}/>
       </Routes>
     </>
   );

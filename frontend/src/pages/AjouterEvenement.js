@@ -15,7 +15,8 @@ class Creation extends Component {
         <a href="Vendeur" id="img"><img src="fleche.png"></img></a>
         </section>
                 <h1>
-Modification d'un événement        </h1>
+        Creation d’un événement
+        </h1>
         <form onSubmit={this.Creation}>
         <input type="text" id="nomevenement" placeholder="Nom"/>
             <input type="text" id="description" placeholder="Description"/>

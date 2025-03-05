@@ -29,6 +29,7 @@ class Connexion extends Component {
 
         <a href="Creation">Pas de compte? Créer un compte.</a>
         <a href="Oublier">Oublier le mot de passe</a>
+        <a href="Vendeur">Vendeur</a>
         </p>
 
 
