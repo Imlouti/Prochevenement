@@ -27,8 +27,8 @@ class Creation extends Component {
                         socket.on("utilisateur", (arg, callback) => {
                             console.log(arg);
                             if(arg!=undefined){
-                                localStorage.setItem("nom", user);
-                                document.location.href=arg;
+                                localStorage.setItem("nom", arg[1]);
+                                document.location.href=arg[0];
                                 //clearInterval();
                             }
                         });

@@ -11,26 +11,22 @@ class Connexion extends Component {
             event.preventDefault(); 
             const socket = socketIOClient(ENDPOINT);
             //client donne le surnom de l<utilisateur au serveur
-            var slider=2;
-            if(document.getElementById("slider").checked==true){
-                slider=1;
-            }
-            else{
-                slider=0;
-            }
-            var user=[document.getElementById("nom").value,document.getElementById("courriel").value, document.getElementById("password").value, slider];
-            socket.on("utilisateur", (arg, callback) => {
+            var user=[document.getElementById("nom").value,document.getElementById("courriel").value, document.getElementById("password").value];
+            socket.on("connexion", (arg, callback) => {
                 callback(user);
             });
             //serbeur donne la route pour changer de page
             setInterval(() => {
                 const socket = socketIOClient(ENDPOINT);
-                        socket.on("utilisateur", (arg, callback) => {
+                        socket.on("connexion", (arg, callback) => {
                             console.log(arg);
-                            if(arg!=undefined){
+                            if(arg!=undefined || arg=="/Connexion"){
                                 localStorage.setItem("nom", user);
                                 document.location.href=arg;
                                 //clearInterval();
+                            }
+                            else if(arg=="/Connexion"){
+                                document.getElementById("hidden").style.display="block";
                             }
                         });
             }, 1000);
@@ -54,6 +50,7 @@ class Connexion extends Component {
                         
 
                 </form>
+                <a id="hidden">Ce compte n'existe pas.</a>
                 <p id="two">
 
         <a href="Creation">Pas de compte? Créer un compte.</a>
