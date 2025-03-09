@@ -64,7 +64,7 @@ io.on("connection", (socket) => {
       routeCreation="/Vendeur";
     }
     else if(vendeur==0){
-      routeCreation="/Magasiner";
+      routeCreation="/Connexion";
     }
 
       socket.emit("utilisateur", routeCreation, (callback)=>{
