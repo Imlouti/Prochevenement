@@ -28,6 +28,9 @@ let intervalReponse; //nombre de reponses
 let routeCreation; //route pour changer de creation a magasiner ou vendeur
 let routeConnexion; //route pour changer de creation a magasiner ou vendeur
 
+let trouver;
+let trouverFind;
+
 
 let listeBonne; //liste avec les bonnes repsonses
 let listeFausse; //liste avec les fausse repsonses
@@ -73,26 +76,25 @@ io.on("connection", (socket) => {
 
       //connexion dun compte
       if(nonvalide==1){
-        routeConnexion="/Vendeur";
+        routeConnexion=["/Vendeur",trouverFind];
       }
       else if(nonvalide==0){
-        routeConnexion="/Magasiner";
+        routeConnexion=["/Magasiner",trouverFind];
       }
       else if(nonvalide==2){
         routeConnexion="/Connexion";
       }
-      //if arg="/Connexion" then affiche que le compte nexiste pas sinon fait comme creation
   
         socket.emit("connexion", routeConnexion, (callback)=>{
-          if (callback[3]!=2){
-          if(trouverCompte(callback)[0]==false){
+          trouver=trouverCompte(callback)
+          if(trouver[0]==false){
             nonvalide=2;
           }
           else{
-            trouverCompte(callback)[1] //pour liste de tous les info de lutilisateur
-            vendeur=callback[3]; //pour savoir si vendeur ou non
+            trouverFind=trouver[1] //pour liste de tous les info de lutilisateur
+            nonvalide=callback[1][4]; //pour savoir si vendeur ou non
           }
-          }
+          
           }
         );
 /*
@@ -211,11 +213,19 @@ async function create(user) {
   await nouveauJoueur.save();
   console.log(nouveauJoueur.nom);
 }
-/*
-async function trouverQuestion(user){
-  var questionTrouver = await questions.findById(id).exec();
-  var listeQuestionTrouver = [questionTrouver.question, questionTrouver.reponse];
-  return listeQuestionTrouver
+
+async function trouverCompte(user){
+
+// find each person with a last name matching 'Ghost', selecting the `name` and `occupation` fields
+const joueur = await joueurs.findOne({ 'courriel': user[1] }, 'nom courriel postal motpasse vendeur');
+// Prints "Space Ghost is a talk show host".
+userFind=[joueur.nom, joueur.courriel, joueur.postal, joueur.motpasse, joueur.vendeur];
+if(user[0]==userFind[0] && user[1]==userFind[1] && user[2]==userFind[3]){
+  return [true, userFind]
+}
+else{
+  return [false, 0]
+}
 }
 
 /*
