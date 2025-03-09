@@ -21,8 +21,8 @@ class Connexion extends Component {
                         socket.on("connexion", (arg, callback) => {
                             console.log(arg);
                             if(arg!=undefined || arg=="/Connexion"){
-                                localStorage.setItem("nom", user);
-                                document.location.href=arg;
+                                localStorage.setItem("nom", arg[1]);
+                                document.location.href=arg[0];
                                 //clearInterval();
                             }
                             else if(arg=="/Connexion"){
@@ -40,7 +40,7 @@ class Connexion extends Component {
                 <a href="/" id="img"><img src="fleche.png"></img></a>
         </section>
         <h1>
-        Connexion BROKEN PAGE, SEE CREATION
+        Connexion
         </h1>
         <form onSubmit={this.Submit}>
             <input type="text" id="nom" class="input" placeholder="Nom"/>

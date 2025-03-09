@@ -18,6 +18,13 @@ class Creation extends Component {
                 slider=0;
             }
             var user=[document.getElementById("nom").value,document.getElementById("courriel").value, document.getElementById("postal").value, document.getElementById("password").value, slider];
+            console.log(user);
+            var isAtLeastOneNull =user.some(function(i) { return i === ""; })
+            if(isAtLeastOneNull===true){
+                user[4]=2;
+                document.getElementById("hidden").style.display="block";
+            }
+            else{
             socket.on("utilisateur", (arg, callback) => {
                 callback(user);
             });
@@ -27,13 +34,14 @@ class Creation extends Component {
                         socket.on("utilisateur", (arg, callback) => {
                             console.log(arg);
                             if(arg!=undefined){
-                                localStorage.setItem("nom", arg[1]);
-                                document.location.href=arg[0];
+                                localStorage.setItem("nom", arg);
+                                document.location.href=arg;
                                 //clearInterval();
                             }
                         });
             }, 1000);
         }
+    }
     }
 
     render() { 
@@ -58,6 +66,7 @@ class Creation extends Component {
 
 </div>
                 </form>
+        <a id="hidden">Vous devez remplir tous les champs.</a>
 
         <a href="Connexion">Déja un compte? Connectez-vous.</a>
 
