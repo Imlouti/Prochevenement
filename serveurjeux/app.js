@@ -68,10 +68,9 @@ io.on("connection", (socket) => {
     }
 
       socket.emit("utilisateur", routeCreation, (callback)=>{
-        if (callback[4]!=2){
+        vendeur=callback[4];
         create(callback);
-          vendeur=callback[4];
-        }
+        
       });
 
       //connexion dun compte
