@@ -7,8 +7,12 @@ const ENDPOINT = "http://192.168.37.1:4001";
 
 class Connexion extends Component {
     async Submit(event) {
+
         if (event) {
             event.preventDefault(); 
+            document.location.href="Magasiner";
+                    /*code below doesnt work yet
+
             const socket = socketIOClient(ENDPOINT);
             //client donne le surnom de l<utilisateur au serveur
             var user=[document.getElementById("nom").value,document.getElementById("courriel").value, document.getElementById("password").value];
@@ -28,7 +32,7 @@ class Connexion extends Component {
                                 document.getElementById("hidden").style.display="block";
                             }
                         });
-            }, 1000);
+            }, 1000);*/
         }
     }
         
