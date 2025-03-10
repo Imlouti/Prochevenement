@@ -21,7 +21,6 @@ class Creation extends Component {
             console.log(user);
             var isAtLeastOneNull =user.some(function(i) { return i === ""; })
             if(isAtLeastOneNull===true){
-                user[4]=2;
                 document.getElementById("hidden").style.display="block";
             }
             else{
@@ -36,7 +35,6 @@ class Creation extends Component {
                             if(arg!=undefined){
                                 localStorage.setItem("nom", arg);
                                 document.location.href=arg;
-                                //clearInterval();
                             }
                         });
             }, 1000);
