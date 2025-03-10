@@ -78,7 +78,7 @@ io.on("connection", (socket) => {
         
       });
 
-      //connexion dun compte
+      /*connexion dun compte doesnt work yet
       if(nonvalide==1){
         routeConnexion=["/Vendeur",trouverFind];
       }
@@ -100,7 +100,7 @@ io.on("connection", (socket) => {
           }
           
           }
-        );
+        );*/
 
 
 
