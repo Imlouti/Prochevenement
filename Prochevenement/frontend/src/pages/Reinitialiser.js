@@ -36,5 +36,4 @@ class Reinitialiser extends Component {
   }
 }
 
-
 export default Reinitialiser;
