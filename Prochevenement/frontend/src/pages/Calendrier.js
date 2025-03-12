@@ -40,8 +40,8 @@ const ServerDay = (props) => {
 
 const SessionBooking = ({ doctor }) => {
   const [highlightedDays] = useState([
-    "2025-03-07",
-    "2025-03-09",
+    "2025-04-07",
+    "2025-04-09",
     "2025-03-21",
     "2025-03-12",
   ]);
