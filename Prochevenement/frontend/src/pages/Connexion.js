@@ -10,7 +10,27 @@ class Connexion extends Component {
 
         if (event) {
             event.preventDefault(); 
-            document.location.href="Magasiner";
+            var user=localStorage.getItem("nom");
+            console.log(user);
+            var user2=[document.getElementById("nom").value,document.getElementById("courriel").value, document.getElementById("password").value];
+            if(user==null){
+                document.getElementById("hidden").style.display="block";
+            }
+            else{
+                user=user.split(",");
+                if(user[0]==user2[0] && user[1]==user2[1] && user[3]==user2[2]){
+                    if(user[4==1]){
+                        document.location.href="Vendeur";
+                    }
+                    else{
+                        document.location.href="Magasiner";
+                    }
+                }
+                else{
+                    document.getElementById("oublier").style.color="red";
+                }
+            }
+          
                     /*code below doesnt work yet
 
             const socket = socketIOClient(ENDPOINT);
@@ -57,7 +77,7 @@ class Connexion extends Component {
                 <p id="two">
 
         <a href="Creation">Pas de compte? Créer un compte.</a>
-        <a href="Oublier">Oublier le mot de passe</a>
+        <a href="Oublier" id="oublier">Oublier le mot de passe</a>
         
         </p>
 

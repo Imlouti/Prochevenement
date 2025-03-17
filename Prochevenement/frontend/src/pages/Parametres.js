@@ -1,17 +1,30 @@
 import React, { Component } from 'react';
 //import './App.css';
 
-class Parametres extends Component {
+function Parametres() {
+  function getNom(){
+    let message = localStorage.getItem("nom");
+    message=message.split(",");
+    message=message[0].split(" ");
+    return message[0]
     
-    render() { 
-        return <div id="background">
-        <section>
+    }
+    
+    
+        return( <div id="background">
+        
+        <p id="two">
+
+                <section id="user">
+                <p id="user">Bonjour, {getNom()} </p>
+        </section>
+        <section id="bar">
         <a href="Magasiner" id="img"><img src="acceuil.png"></img></a>
         <a href="Parametres" id="img"><img src="parametres.png" ></img></a>
         <a href="Calendrier" id="img"><img src="calendrier.png" ></img></a>
         <a href="Panier" id="img"><img src="panier.png" ></img></a>
         <a href="Propos" id="img"><img src="info.png" ></img></a>
-        </section>
+        </section></p>
         <a href="Modifier">Modifier le compte</a>
 
         <a href="Annuler">Annuler un evenement</a>
@@ -23,7 +36,7 @@ class Parametres extends Component {
 
 
 </div>
+        )
   }
-}
  
 export default Parametres;
