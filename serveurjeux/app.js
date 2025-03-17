@@ -1,7 +1,6 @@
 const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
-const mongodb = require("mongodb");
 const mongoose = require('mongoose');
 
 //routes et quelle port
@@ -10,180 +9,132 @@ const index = require("./routes/index.js");
 const app = express();
 app.use(index);
 
+const question = require('./routes/question');
+app.use('/question', question);
+
+const gagnant = require('./routes/gagnant');
+app.use('/gagnant', gagnant);
+
 //creer le serveur
 const server = http.createServer(app);
 
 const io = socketIo(server);
 
-let intervalClient; //nombre de clients
-let intervalReponse; //nombre de reponses
+let vendeur; //vendeur ou non
+let nonvalide; //compte pas creer et si vendeur
 
-let routeQuestion; //route pour changer de login a question
+let routeCreation; //route pour changer de creation a magasiner ou vendeur
+let routeConnexion; //route pour changer de creation a magasiner ou vendeur
 
-let listeBonne; //liste avec les bonnes repsonses
-let listeFausse; //liste avec les fausse repsonses
-let listeGagnant; //liste avec la page gagnante et linformation du joueur gagnant
-let listeTemps; //temps des utilisateurs
+let trouver;
+let trouverFind;
 
 var joueurs; //collection joueurs
-mongoose.connect('mongodb://127.0.0.1:27017/Jeux');
+mongoose.connect('mongodb://127.0.0.1:27017/Prochevenement');
   joueurs = mongoose.model('joueurs', new mongoose.Schema({
     _id: mongoose.Types.ObjectId,
-    nom: String//,
-    //reponse: Boolean,
-    //temps: Number
+    nom: String,
+    courriel:String,
+    postal:String,
+    motpasse:String,
+    vendeur:Number
+
   }));
 
 
-var questions; //collection questions
-questions = mongoose.model('questions', new mongoose.Schema({
+var evenements; //collection evenements 
+
+evenements = mongoose.model('evenements', new mongoose.Schema({
   _id: mongoose.Types.ObjectId,
-  question: String,
-  reponse: Boolean
+  nom: String,
+  description: String,
+  prix: Number,
+  date: String,
+  billets: Number
 }));
 
 io.on("connection", (socket) => {
 
-    //client donne le surnom de l'utilisateur avec le socket utilisateur
-    //le serveur donne la route pour la page question avec le socket utilisateur
-    if(intervalClient>1){
-      routeQuestion="/question";
+    //creation dun compte
+    if(vendeur==1){
+      routeCreation=["/Vendeur", user];
     }
-      socket.emit("utilisateur", routeQuestion, (callback)=>{
+    else if(vendeur==0){
+      routeCreation=["/Connexion", user];
+    }
+
+      socket.emit("utilisateur", routeCreation, (callback)=>{
+        vendeur=callback[4];
+        user=callback;
         create(callback);
-        if(intervalClient==undefined){
-          intervalClient=1;
-        }
-        else{
-          intervalClient=intervalClient+1;
-        }
+        
       });
 
-      var promise=trouverQuestion("66eb1c42b3dd1ad002c4fc41");
-      var listeQuestionTrouver;
-      promise.then((data)=>{
-        listeQuestionTrouver=data;
-      
-    const messageQuestion=listeQuestionTrouver[0]; //question du serveur
-      socket.emit("question", messageQuestion, (callbackMessage)=>{
+
+      //creation dun evenement
+  
+
+      socket.emit("evenement", "/Vendeur", (callback)=>{
+        createEvent(callback);
+        
       });
 
-    let bonneReponse=listeQuestionTrouver[1]; //bonne reponse du serveur
-    if(intervalReponse>1){
-      if (listeBonne!=undefined){
-        listeTemps=creerTemps(listeBonne);
-        listeGagnant=["/gagnant", listeBonne[findIndex(listeTemps)],bonneReponse]; //message gagnant est un string avec le message qui contient le gagnant, la bonne reponse et le temps de reponse
+      /*connexion dun compte doesnt work yet
+      if(nonvalide==1){
+        routeConnexion=["/Vendeur",trouverFind];
       }
-
-      else if (listeFausse!=undefined){
-        listeTemps=creerTemps(listeFausse);
-        listeGagnant=["/gagnant", listeFausse[findIndex(listeTemps)],bonneReponse]; //message gagnant est un string avec le message qui contient le gagnant, la bonne reponse et le temps de reponse
+      else if(nonvalide==0){
+        routeConnexion=["/Magasiner",trouverFind];
       }
-    }
-      socket.emit("repondu", listeGagnant, (callbackRepondu)=>{
-        console.log(callbackRepondu); //mettre le temps [1] et la reponse [2] de l'utilisateur [0]
-        verifieReponse(callbackRepondu, bonneReponse);
-      });
-    })
+      else if(nonvalide==2){
+        routeConnexion="/Connexion";
+      }
+  
+        socket.emit("connexion", routeConnexion, (callback)=>{
+          trouver=trouverCompte(callback)
+          if(trouver[0]==false){
+            nonvalide=2;
+          }
+          else{
+            trouverFind=trouver[1] //pour liste de tous les info de lutilisateur
+            nonvalide=callback[1][4]; //pour savoir si vendeur ou non
+          }
+          
+          }
+        );*/
+
 
 
 });
 
-function verifieReponse(callbackRepondu,bonneReponse){
-  if (intervalReponse==undefined){
-    intervalReponse=1;
-  }
-  else {
-    intervalReponse=intervalReponse+1;
-}
-  if (callbackRepondu[2]==bonneReponse){ //si utilisateur a la bonne reponse donc ajoute le a une liste de bonne reponses
-    if(listeBonne==undefined){
-      listeBonne=[callbackRepondu];
-    }
-    else{
-    listeBonne[intervalReponse-1]=callbackRepondu;
-    }
-  }
-  else{
-    if(listeFausse==undefined){
-      listeFausse=[callbackRepondu];
-    }
-    else{
-      listeFausse[intervalReponse-1]=callbackRepondu;
-  }
-}
-}
 
-function creerTemps(liste){
-  var n=0;
-  for (element in liste){
-    n++;
-  }
-  for(let i=0;i<n;i++){
-    if (i==0){
-      listeTemps=[liste[0][1]];
-    }
-    else{
-    listeTemps[i]=liste[i][1];
-    }
-  }
-      return listeTemps
-    }
-
-function findIndex(listeTemps){
-  var n=0;
-    var minTemps;
-    for (element in listeTemps){
-      n++;
-    }
-    for(let i=0;i<n;i++){
-      if (minTemps==undefined){
-        minTemps=listeTemps[i];
-      }
-      else if (minTemps>listeTemps[i]){
-        minTemps=listeTemps[i];
-      }
-    }
-  for(let i=0;i<n;i++){
-    if(minTemps==listeTemps[i]){
-      return i;
-    }
-  }
-}
-
-/*async function connection(){
-  return new Promise((resolve, reject) => {
-    mongoose.connect('mongodb://127.0.0.1:27017/Jeux');
-    if (joueurs==undefined){
-      joueurs = mongoose.model('joueurs', new mongoose.Schema({
-        _id: mongodb.ObjectId,
-        nom: String
-      }));
-      resolve(joueurs);
-    }
-    else{
-      resolve(joueurs);
-    }
-  })
-}*/
-
-async function create(stringNom) {
-  //await connection();
-  const nouveauJoueur = new joueurs({ _id: new mongoose.Types.ObjectId(), nom: stringNom });
+async function create(user) {
+  const nouveauJoueur = new joueurs({ _id: new mongoose.Types.ObjectId(), nom: user[0], courriel:user[1], postal:user[2], motpasse:user[3], vendeur:user[4]
+ });
   await nouveauJoueur.save();
   console.log(nouveauJoueur.nom);
 }
 
-async function trouverQuestion(id){
-  var questionTrouver = await questions.findById(id).exec();
-  var listeQuestionTrouver = [questionTrouver.question, questionTrouver.reponse];
-  return listeQuestionTrouver
+async function createEvent(event) {
+
+  const nouveauEvent = new evenements({ _id: new mongoose.Types.ObjectId(), nom: event[0], description:event[1], prix:event[2], date:event[3], billets:event[4]
+ });
+  await nouveauEvent.save();
+  console.log(nouveauEvent.nom);
 }
 
-/*
-async function 
-trouverQuestion et comparer a la reponse de l<utilisateur
-*/
+
+async function trouverCompte(user){
+
+const joueur = await joueurs.findOne({ 'courriel': user[1] }, 'nom courriel postal motpasse vendeur');
+userFind=[joueur.nom, joueur.courriel, joueur.postal, joueur.motpasse, joueur.vendeur];
+if(user[0]==userFind[0] && user[1]==userFind[1] && user[2]==userFind[3]){
+  return [true, userFind]
+}
+else{
+  return [false, 0]
+}
+}
 
 
 server.listen(port, () => console.log(`Listening on port ${port}`));
