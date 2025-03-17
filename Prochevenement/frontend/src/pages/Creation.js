@@ -40,7 +40,7 @@ class Creation extends Component {
             }, 1000);
         }
     }
-    }
+}
 
     render() { 
         return <div id="background">
@@ -48,7 +48,7 @@ class Creation extends Component {
         <a href="/" id="img"><img src="fleche.png"></img></a>
         </section>
                 <h1>
-        Creation d’un compte
+        Creation d’un compte 
         </h1>
         <form onSubmit={this.Submit}>
         <input type="text" id="nom" class='input' placeholder="Nom"/>
@@ -58,12 +58,16 @@ class Creation extends Component {
                         <button id="submit" color="primary" type="submit" class='button'>Créer le compte</button>
                         <div id="switch">
             <label class="container">Vendeur
-  <input type="radio" id="slider"></input>
-  <span class="checkmark"></span>
-</label>
-
-</div>
-                </form>
+            <input type="radio" id="vendeur" name="role" />
+                <span className="checkmark"></span>
+                </label>
+                <label className="container">
+                Utilisateur
+                <input type="radio" id="utilisateur" name="role" />
+                <span className="checkmark"></span>
+                </label>
+            </div>
+        </form>
         <a id="hidden">Vous devez remplir tous les champs.</a>
 
         <a href="Connexion">Déja un compte? Connectez-vous.</a>
