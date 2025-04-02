@@ -4,6 +4,16 @@ import React, { Component } from 'react';
 class Magasiner extends Component {
 
     render() { 
+
+       // Récupérer les informations de l'utilisateur du localStorage
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        if (!user) {
+            // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
+            window.location.href = '/Connexion';
+        }
+
+
         return <div id="background">
         
         <section>

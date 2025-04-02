@@ -10,7 +10,44 @@ class Connexion extends Component {
 
         if (event) {
             event.preventDefault(); 
-            document.location.href="Magasiner";
+            const user = {
+                courriel: document.getElementById("courriel").value,
+                motpasse: document.getElementById("password").value
+            };
+            
+             // Envoi des données de connexion au backend pour vérifier les identifiants
+             try {
+                const response = await fetch('http://localhost:4001/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(user)
+                });
+
+                const data = await response.json();
+                console.log(data);
+
+                if (response.ok) {
+                    // Si la connexion est réussie, 
+                    // Enregistrez les informations de l'utilisateur dans le localStorage
+                    localStorage.setItem('user', JSON.stringify({
+                        nom: data.nom, // Vous pouvez renvoyer le nom depuis le backend
+                        role: data.role // Renvoie le rôle de l'utilisateur (vendeur ou utilisateur)
+                    }));
+
+                    // Rediriger vers la page appropriée
+
+                    document.location.href = data.route; // Utilise la route retournée par le serveur
+                } else {
+                    // En cas d'échec, afficher un message d'erreur
+                    document.getElementById("hidden").style.display = "block";
+                }
+            } catch (error) {
+                console.error('There was an error logging in:', error);
+            }
+            
+            //document.location.href="Magasiner";
                     /*code below doesnt work yet
 
             const socket = socketIOClient(ENDPOINT);
