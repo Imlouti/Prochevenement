@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Navigator } from '../components/Navigator';
 //import './App.css';
 
 class Acheter extends Component {
@@ -14,13 +15,7 @@ class Acheter extends Component {
                 <section id="back">
                 <a href="Panier" id="img"><img src="fleche.png"></img></a>
         </section>
-        <section>
-        <a href="Magasiner" id="img"><img src="acceuil.png"></img></a>
-        <a href="Parametres" id="img"><img src="parametres.png" ></img></a>
-        <a href="Calendrier" id="img"><img src="calendrier.png" ></img></a>
-        <a href="Panier" id="img"><img src="panier.png" ></img></a>
-        <a href="Propos" id="img"><img src="info.png" ></img></a>
-        </section>
+        <Navigator/>
         </p>
 
         <form onSubmit={this.Creation}>
