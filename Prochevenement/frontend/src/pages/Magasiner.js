@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { EventTable } from "../components/EventTable"
 //import './App.css';
 
 class Magasiner extends Component {
@@ -13,11 +14,10 @@ class Magasiner extends Component {
         <a href="Panier" id="img"><img src="panier.png" ></img></a>
         <a href="Propos" id="img"><img src="info.png" ></img></a>
         </section>
+
+        <EventTable></EventTable>
+        
         <a href="Evenement">Evenement</a>
-
-
-
-
 
 
 </div>
