@@ -21,20 +21,22 @@ import ModifierEvenement from './pages/ModifierEvenement';
 import AppercuMagasiner from './pages/AppercuMagasiner';
 import AppercuEvenement from './pages/AppercuEvenement';
 import AjouterEvenement from './pages/AjouterEvenement';
-
-
+import React from 'react';
 
 
 function App() {
   return (
-    <>
+      <>
       <Routes>
+        
         <Route path="/" element={<Acceuil/>} />
+        <Route path="/Magasiner" element={<Magasiner/>}/>
+
         <Route path="/Connexion" element={<Connexion/>}/>
         <Route path="/Creation" element={<Creation/>}/>
         <Route path="/Oublier" element={<Oublier/>}/>
         <Route path="/Reinitialiser" element={<Reinitialiser/>}/>
-        <Route path="/Magasiner" element={<Magasiner/>}/>
+        
         <Route path="/Modifier" element={<Modifier/>}/>
         <Route path="/Evenement" element={<Evenement/>}/>
         <Route path="/Parametres" element={<Parametres/>}/>
@@ -49,7 +51,7 @@ function App() {
         <Route path="/AppercuEvenement" element={<AppercuEvenement/>}/>
         <Route path="/AjouterEvenement" element={<AjouterEvenement/>}/>
       </Routes>
-    </>
+      </>
   );
 }
 

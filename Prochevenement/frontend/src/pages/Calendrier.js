@@ -10,6 +10,7 @@ import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { frFR } from '@mui/x-date-pickers/locales';
 
 import 'dayjs/locale/fr';
+import { Navigator } from "../components/Navigator";
 
 
 
@@ -67,11 +68,8 @@ const SessionBooking = ({ doctor }) => {
                 <p id="user">Bonjour, {getNom()} </p>
         </section>
         <section id="bar">
-        <a href="Magasiner" id="img"><img src="acceuil.png"></img></a>
-        <a href="Parametres" id="img"><img src="parametres.png" ></img></a>
-        <a href="Calendrier" id="img"><img src="calendrier.png" ></img></a>
-        <a href="Panier" id="img"><img src="panier.png" ></img></a>
-        <a href="Propos" id="img"><img src="info.png" ></img></a>
+              <Navigator/>
+
         </section></p>
         <LocalizationProvider dateAdapter={AdapterDayjs} localeText={frFR.components.MuiLocalizationProvider.defaultProps.localeText} adapterLocale="fr"        >
           <StaticDatePicker

@@ -1,6 +1,9 @@
 
 import React, { Component } from 'react';
 //import './App.css';
+
+//import LoginComp from '../components/LoginComp';
+
 import socketIOClient from "socket.io-client";
 const ENDPOINT = "http://192.168.37.1:4001";
 
@@ -57,7 +60,11 @@ class Connexion extends Component {
     }
         
     render() { 
-        return     <div id="background">
+
+                return(
+            
+        <div id="background">
+
 
                 <section id="back">
                 <a href="/" id="img"><img src="fleche.png"></img></a>
@@ -83,7 +90,12 @@ class Connexion extends Component {
 
 
 </div>
+
+    );
+
   }
+
 }
+
  
 export default Connexion;

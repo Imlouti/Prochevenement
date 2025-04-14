@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Navigator } from '../components/Navigator';
 //import './App.css';
 
 function Modifier() {
@@ -15,23 +16,16 @@ function Modifier() {
             document.location.href="Parametres";
         }
         }
-
         
 
-    return( 
-         <div id="background">
+     render() { 
+        return <div id="background">
                         <p id="two">
 
                 <section id="back">
                 <a href="Parametres" id="img"><img src="fleche.png"></img></a>
         </section>
-        <section>
-        <a href="Magasiner" id="img"><img src="acceuil.png"></img></a>
-        <a href="Parametres" id="img"><img src="parametres.png" ></img></a>
-        <a href="Calendrier" id="img"><img src="calendrier.png" ></img></a>
-        <a href="Panier" id="img"><img src="panier.png" ></img></a>
-        <a href="Propos" id="img"><img src="info.png" ></img></a>
-        </section></p>
+        </p>
         <h1>
         Modification
         </h1>

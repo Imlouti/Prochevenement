@@ -1,5 +1,7 @@
 "use server"
 import React, { Component } from 'react';
+import { Table } from '@mui/material';
+import { Navigator } from '../components/Navigator';
 //import './App.css';
 /*import { connect } from 'mongoose';
 
@@ -68,6 +70,7 @@ Billets Restant
     }
     }
 
+
     function getEvent(){
       let message = localStorage.getItem("event");
       if(message!=null){
@@ -80,20 +83,14 @@ Billets Restant
 
     }
 
-    return( 
-         <div id="background">
+    render() {
+        return <div id="background">
                       <p id="two">
 
                 <section id="back">
                 <a href="Magasiner" id="img"><img src="fleche.png"></img></a>
         </section>
-        <section>
-        <a href="Magasiner" id="img"><img src="acceuil.png"></img></a>
-        <a href="Parametres" id="img"><img src="parametres.png" ></img></a>
-        <a href="Calendrier" id="img"><img src="calendrier.png" ></img></a>
-        <a href="Panier" id="img"><img src="panier.png" ></img></a>
-        <a href="Propos" id="img"><img src="info.png" ></img></a>
-        </section>
+        
 </p>
         
                     
