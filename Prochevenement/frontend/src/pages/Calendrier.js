@@ -44,15 +44,33 @@ const SessionBooking = ({ doctor }) => {
     "2025-04-07",
     "2025-04-09",
     "2025-03-21",
-    "2025-03-12",
+    "2025-04-12",
   ]);
 
 
   const today = dayjs();
 
+  function getNom(){
+    let message = localStorage.getItem("nom");
+    message=message.split(",");
+    message=message[0].split(" ");
+    return message[0]
+    
+    }
+
+
   return (
     <div id="background">
-      <Navigator/>
+        
+        <p id="two">
+
+                <section id="user">
+                <p id="user">Bonjour, {getNom()} </p>
+        </section>
+        <section id="bar">
+              <Navigator/>
+
+        </section></p>
         <LocalizationProvider dateAdapter={AdapterDayjs} localeText={frFR.components.MuiLocalizationProvider.defaultProps.localeText} adapterLocale="fr"        >
           <StaticDatePicker
             defaultValue={today}

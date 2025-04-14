@@ -13,7 +13,27 @@ class Connexion extends Component {
 
         if (event) {
             event.preventDefault(); 
-            document.location.href="Magasiner";
+            var user=localStorage.getItem("nom");
+            console.log(user);
+            var user2=[document.getElementById("nom").value,document.getElementById("courriel").value, document.getElementById("password").value];
+            if(user==null){
+                document.getElementById("hidden").style.display="block";
+            }
+            else{
+                user=user.split(",");
+                if(user[0]==user2[0] && user[1]==user2[1] && user[3]==user2[2]){
+                    if(user[4==1]){
+                        document.location.href="Vendeur";
+                    }
+                    else{
+                        document.location.href="Magasiner";
+                    }
+                }
+                else{
+                    document.getElementById("oublier").style.color="red";
+                }
+            }
+          
                     /*code below doesnt work yet
 
             const socket = socketIOClient(ENDPOINT);
@@ -40,31 +60,33 @@ class Connexion extends Component {
     }
         
     render() { 
-        return(
+
+                return(
             
         <div id="background">
 
-        <section id="back">
-        <a href="/" id="img"><img src="fleche.png"></img></a>
-</section>
-<h1>
-Connexion
-</h1>
-<form onSubmit={this.Submit}>
-    <input type="text" id="nom" class="input" placeholder="Nom"/>
-    <input type="text" id="courriel" class="input" placeholder="Courriel"/>
-    <input type="text" id="password" class="input" placeholder="Mot de passe"/>
-                <button id="submit" class="button" color="primary" type="submit">Connexion</button>
-                
 
-        </form>
-        <a id="hidden">Ce compte n'existe pas.</a>
-        <p id="two">
+                <section id="back">
+                <a href="/" id="img"><img src="fleche.png"></img></a>
+        </section>
+        <h1>
+        Connexion
+        </h1>
+        <form onSubmit={this.Submit}>
+            <input type="text" id="nom" class="input" placeholder="Nom"/>
+            <input type="text" id="courriel" class="input" placeholder="Courriel"/>
+            <input type="text" id="password" class="input" placeholder="Mot de passe"/>
+                        <button id="submit" class="button" color="primary" type="submit">Connexion</button>
+                        
 
-<a href="Creation">Pas de compte? Créer un compte.</a>
-<a href="Oublier">Oublier le mot de passe</a>
+                </form>
+                <a id="hidden">Ce compte n'existe pas.</a>
+                <p id="two">
 
-</p>
+        <a href="Creation">Pas de compte? Créer un compte.</a>
+        <a href="Oublier" id="oublier">Oublier le mot de passe</a>
+        
+        </p>
 
 
 </div>

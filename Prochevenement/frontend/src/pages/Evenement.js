@@ -32,18 +32,59 @@ mongoose.connect('mongodb://127.0.0.1:27017/Prochevenement');
   */
 
 
-class Evenement extends Component {
-  async Creation(event) {
+function Evenement() {
+     /*
+          let message = localStorage.getItem("event");
+          0-6
+          arg billets restant -1
+          localStorage.getItem("event", arg)
+    Nom de l’événement
+Description
+Prix
+Emplacement
+Date
+Billets Restant
+      let message = localStorage.getItem("event");
+
+
+    */
+  function Creation(event) {
     if (event) {
         event.preventDefault(); 
-        document.getElementById("hidden").style.display="block";
         document.location.href="Magasiner";
+
+        /*
+        let massage = localStorage.getItem("event");
+      
+          massage=massage.split(",");
+          console.log(massage);
+          if(massage[5]>0){
+            massage[5]=massage[5]-1;
+            localStorage.setItem("event",massage);
+            document.location.href="Magasiner";
+          }
+          else{
+          document.getElementById("hidden").style.display="block";
+        }*/
+  
     }
+    }
+
+
+    function getEvent(){
+      let message = localStorage.getItem("event");
+      if(message!=null){
+      message=message.split(",");
+      return [message[0],message[1], message[2],message[3],message[4],message[5]]
+      }
+      else{
+        return ["","","","",""]
+      }
+
     }
 
     render() {
         return <div id="background">
-          <Navigator/>
                       <p id="two">
 
                 <section id="back">
@@ -51,20 +92,25 @@ class Evenement extends Component {
         </section>
         
 </p>
-        <h1>
-        Nom de l’événement
+        
+                    
+                    <form onSubmit={Creation()}>
+                    <h1>
+        {getEvent()[0]}
                 </h1>
                 <h2>
-                Description
+                {getEvent()[1]}
                 </h2>
-                <a>Prix</a>
-                    <a>Emplacement</a>
-                    <a>Date</a>
-                    <a>Billets Restant</a>
+                <a>  {getEvent()[2]}</a>
+                    <a>  {getEvent()[3]}</a>
+                    <a>  {getEvent()[4]}</a>
+                    <a>  {getEvent()[5]}</a>
+                        <button id="submit" color="primary" type="submit" class='button'>Acheter</button>
+                </form>
 
-                    <button onClick={this.Creation} class="button">Acheter</button>
 
-                    <a id="hidden">Ajouter au panier.</a>
+
+                    <a id="hidden">Pas de billets restant.</a>
 
 
 
@@ -72,7 +118,7 @@ class Evenement extends Component {
 
 
 </div>
-  }
+    )
 }
  
 export default Evenement;

@@ -25,6 +25,7 @@ class Creation extends Component {
                         socket.on("evenement", (arg, callback) => {
                             console.log(arg);
                             if(arg!=undefined){
+                                localStorage.setItem("event", event);
                                 document.location.href=arg;
                             }
                         });

@@ -57,14 +57,15 @@ io.on("connection", (socket) => {
 
     //creation dun compte
     if(vendeur==1){
-      routeCreation="/Vendeur";
+      routeCreation=["/Vendeur", user];
     }
     else if(vendeur==0){
-      routeCreation="/Connexion";
+      routeCreation=["/Connexion", user];
     }
 
       socket.emit("utilisateur", routeCreation, (callback)=>{
         vendeur=callback[4];
+        user=callback;
         create(callback);
         
       });

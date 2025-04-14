@@ -2,18 +2,24 @@ import React, { Component } from 'react';
 import { Navigator } from '../components/Navigator';
 //import './App.css';
 
-class Modifier extends Component {
-    async Modifier(event) {
+function Modifier() {
+    let message = localStorage.getItem("nom");
+    message=message.split(",");
+
+    document.getElementById("nom").placeholder = message[0];
+    document.getElementById("courriel").placeholder =  message[1];
+    document.getElementById("postal").placeholder =  message[2];
+    function Modifier(event) {
         if (event) {
             event.preventDefault(); 
             var user=[document.getElementById("nom").value,document.getElementById("courriel").value, document.getElementById("postal").value];
             document.location.href="Parametres";
         }
         }
+        
 
-    render() { 
+     render() { 
         return <div id="background">
-            <Navigator/>
                         <p id="two">
 
                 <section id="back">
@@ -23,8 +29,8 @@ class Modifier extends Component {
         <h1>
         Modification
         </h1>
-        <form onSubmit={this.Modifier}>
-            <input type="text" id="nom" class="input" placeholder="Nom"/>
+        <form onSubmit={Modifier()}>
+            <input type="text" id="nom" class="input" placeholder="lol"/>
             <input type="text" id="courriel" class="input" placeholder="Courriel"/>
             <input type="text" id="postal" class="input" placeholder="Code postal"/>
                         <button id="submit" color="primary" type="submit" class="button">Confirmer</button>
@@ -33,7 +39,7 @@ class Modifier extends Component {
 
 
 </div>
-  }
+    )
 }
  
 export default Modifier;

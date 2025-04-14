@@ -3,10 +3,27 @@ import { Navigator } from '../components/Navigator';
 //import './App.css';
 
 class Propos extends Component {
-
-    render() { 
+  function getNom(){
+    let message = localStorage.getItem("nom");
+    message=message.split(",");
+    message=message[0].split(" ");
+    return message[0]
+    
+    }
+    
+    
+            render() { 
         return <div id="background">
-        <Navigator/>
+
+        
+        <p id="two">
+
+                <section id="user">
+                <p id="user">Bonjour, {getNom()} </p>
+        </section>
+        <section id="bar">
+                <Navigator/>
+        </section></p>
         <a><img src="logo.png"></img></a>
 
         <h1>
@@ -23,8 +40,8 @@ plusieurs vendeurs petits pour assurer que meme des petits
 
 
 
-</div>
+</div>)
   }
-}
+
  
 export default Propos;

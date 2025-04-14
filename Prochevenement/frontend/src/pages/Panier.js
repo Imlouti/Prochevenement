@@ -2,11 +2,28 @@ import React, { Component } from 'react';
 import { Navigator } from '../components/Navigator';
 //import './App.css';
 
+<
 class Panier extends Component {
-
-    render() { 
+  function getNom(){
+    let message = localStorage.getItem("nom");
+    message=message.split(",");
+    message=message[0].split(" ");
+    return message[0]
+    
+    }
+    
+    
+        render() { 
         return <div id="background">
-        <Navigator/>
+        
+        <p id="two">
+
+                <section id="user">
+                <p id="user">Bonjour, {getNom()} </p>
+        </section>
+               <Navigator/>
+
+        </section></p>
         <a href="Acheter">Acheter</a>
 
 
@@ -14,8 +31,8 @@ class Panier extends Component {
 
 
 
-</div>
+</div>)
   }
-}
+
  
 export default Panier;
