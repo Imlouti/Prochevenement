@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { Navigator } from '../components/Navigator';
 //import './App.css';
+
 
 function Panier() {
   function getNom(){
@@ -11,21 +13,17 @@ function Panier() {
     }
     
     
-        return( <div id="background">
+    return( <div id="background">
         
-        <p id="two">
+      <p id="two">
 
-                <section id="user">
-                <p id="user">Bonjour, {getNom()} </p>
-        </section>
-        <section id="bar">
-        <a href="Magasiner" id="img"><img src="acceuil.png"></img></a>
-        <a href="Parametres" id="img"><img src="parametres.png" ></img></a>
-        <a href="Calendrier" id="img"><img src="calendrier.png" ></img></a>
-        <a href="Panier" id="img"><img src="panier.png" ></img></a>
-        <a href="Propos" id="img"><img src="info.png" ></img></a>
-        </section></p>
-        <a href="Acheter">Acheter</a>
+              <section id="user">
+              <p id="user">Bonjour, {getNom()} </p>
+      </section>
+      <section id="bar">
+      <Navigator/>
+      </section></p>
+      <a href="Acheter">Acheter</a>
 
 
 
@@ -33,7 +31,7 @@ function Panier() {
 
 
 </div>)
-  }
+}
 
- 
+
 export default Panier;
