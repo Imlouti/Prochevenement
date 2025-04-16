@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Navigator } from '../components/Navigator';
 //import './App.css';
 
-class Propos extends Component {
+function Propos() {
   function getNom(){
     let message = localStorage.getItem("nom");
     message=message.split(",");
@@ -12,9 +12,8 @@ class Propos extends Component {
     }
     
     
-            render() { 
-        return <div id="background">
-
+        
+    return( <div id="background">
         
         <p id="two">
 
@@ -22,7 +21,7 @@ class Propos extends Component {
                 <p id="user">Bonjour, {getNom()} </p>
         </section>
         <section id="bar">
-                <Navigator/>
+        <Navigator/>
         </section></p>
         <a><img src="logo.png"></img></a>
 

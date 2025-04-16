@@ -41,10 +41,7 @@ const ServerDay = (props) => {
 
 const SessionBooking = ({ doctor }) => {
   const [highlightedDays] = useState([
-    "2025-04-07",
-    "2025-04-09",
-    "2025-03-21",
-    "2025-04-12",
+    "2025-04-22",
   ]);
 
 
@@ -90,7 +87,7 @@ const SessionBooking = ({ doctor }) => {
               date=date.toISOString().split('T')[0]
               highlightedDays.forEach(function (item, index) {
                 if (highlightedDays[index]==date){
-                  alert(item)
+                  alert('Concert en '+item)
                 }
               });
               

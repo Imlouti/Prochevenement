@@ -26,18 +26,21 @@ function Magasiner() {
  
     
     
-  render() {
-    return (<div id="background">
+    return( <div id="background">
         
-        <p id="two">
+      <p id="two">
 
-                <section id="user">
-                <p id="user">Bonjour, {getNom()} </p>
-        </section>
-              <Navigator/>
-
-        </section></p>
-        <p id="two">
+              <section id="user">
+              <p id="user">Bonjour, {getNom()} </p>
+      </section>
+      <section id="bar">
+      <a href="Magasiner" id="img"><img src="acceuil.png"></img></a>
+      <a href="Parametres" id="img"><img src="parametres.png" ></img></a>
+      <a href="Calendrier" id="img"><img src="calendrier.png" ></img></a>
+      <a href="Panier" id="img"><img src="panier.png" ></img></a>
+      <a href="Propos" id="img"><img src="info.png" ></img></a>
+      </section></p>
+      <p id="two">
 
 <section id="user">
 <p id="user">        <a href="Evenement">{getEvent()[0]}</a>
@@ -61,14 +64,10 @@ function Magasiner() {
 
 
 
-      <EventTable></EventTable>
-      
-      <a href="Evenement">Evenement</a>
 
 
-      </div>
-    )
-  }
+</div>
+)
 }
- 
+
 export default Magasiner;

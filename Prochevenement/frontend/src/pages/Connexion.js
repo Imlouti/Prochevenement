@@ -61,9 +61,7 @@ class Connexion extends Component {
         
     render() { 
 
-                return(
-            
-        <div id="background">
+                return <div id="background">
 
 
                 <section id="back">
@@ -91,7 +89,7 @@ class Connexion extends Component {
 
 </div>
 
-    );
+    
 
   }
 

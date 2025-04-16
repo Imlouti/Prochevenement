@@ -83,8 +83,9 @@ Billets Restant
 
     }
 
-    render() {
-        return <div id="background">
+        return(
+        
+         <div id="background">
                       <p id="two">
 
                 <section id="back">

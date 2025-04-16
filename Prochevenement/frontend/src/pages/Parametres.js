@@ -13,15 +13,15 @@ function Parametres() {
     }
     
     
-        render() { 
-        return <div id="background">
+    return( <div id="background">
         
         <p id="two">
 
                 <section id="user">
                 <p id="user">Bonjour, {getNom()} </p>
         </section>
-         <Navigator/>
+        <section id="bar">
+        <Navigator/>
         </section></p>
         <a href="Modifier">Modifier le compte</a>
 
