@@ -7,6 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import Rating from '@mui/material/Rating';
 
 
 const columns = [
@@ -14,16 +15,28 @@ const columns = [
 
   { id: 'location', label: 'Location', minWidth: 100 },
 
+  { id: 'vendor', label: "Vendor", minWidth: 100 },
+
+  { id: 'vendorRating', label: "Vendor Rating", minWidth: 100 },
+
+  { id: 'price', label: "Price", minWidth: 100 },
+
 ];
 
-function createData(event, location, population, size) {
-  const density = population / size;
-  return { event, location, population, size, density };
+function createData(event, location, vendor, vendorRating, price) {
+
+  return { event, location, vendor, vendorRating, price };
+}
+
+function createRating(rating) {
+
+    return (<Rating value={rating} precision={0.5} readOnly />);
+
 }
 
 // This will need to be modified to retrieve data from the database
 const rows = [
-  createData('India', 'IN', 1324171354, 3287263),
+  createData('India', 'IN', 'Vendor 1', createRating(3), '$10.00 CAD'),
   createData('China', 'CN', 1403500365, 9596961),
   createData('Italy', 'IT', 60483973, 301340),
   createData('United States', 'US', 327167434, 9833520),
@@ -93,6 +106,8 @@ export const EventTable = () => {
             </TableBody>
             </Table>
         </TableContainer>
+
+        { /* The pagination for some reason hides everything except the options. */ }
         <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
