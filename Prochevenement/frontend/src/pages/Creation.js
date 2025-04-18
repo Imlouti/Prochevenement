@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 //import './App.css';
-import socketIOClient from "socket.io-client";
-const ENDPOINT = "http://192.168.37.1:4001";
 
 
 class Creation extends Component {

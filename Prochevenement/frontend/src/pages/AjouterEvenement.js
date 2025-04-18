@@ -1,37 +1,53 @@
 import React, { Component } from 'react';
 //import './App.css';
-import socketIOClient from "socket.io-client";
-const ENDPOINT = "http://192.168.37.1:4001";
 
 class Creation extends Component {
     async Submit(event) {
         if (event) {
-            event.preventDefault(); 
-            const socket = socketIOClient(ENDPOINT);
-            //date only in format of "2025-03-12"
-            var event=[document.getElementById("nomevenement").value,document.getElementById("description").value, document.getElementById("prix").value, document.getElementById("date").value, document.getElementById("billets").value];
-            console.log(event);
-            var isAtLeastOneNull =event.some(function(i) { return i === ""; })
-            if(isAtLeastOneNull===true){
-                document.getElementById("hidden").style.display="block";
+            event.preventDefault();
+            
+            console.log('Form Submitted');  // Débogage
+            // Collecting event data from the form
+            const evenement = {
+                nom: document.getElementById("nomevenement").value,
+                description: document.getElementById("description").value,
+                prix: document.getElementById("prix").value,
+                date: document.getElementById("date").value,
+                location: document.getElementById("location").value,
+                billets: document.getElementById("billets").value
+            };
+
+            // Check if any fields are empty
+            const isAtLeastOneNull = Object.values(evenement).some(i => i === "");
+            if (isAtLeastOneNull) {
+                document.getElementById("hidden").style.display = "block"; // Show error if fields are empty
+                return;
             }
-            else{
-            socket.on("evenement", (arg, callback) => {
-                callback(event);
-            });
-            //serbeur donne la route pour changer de page
-            setInterval(() => {
-                const socket = socketIOClient(ENDPOINT);
-                        socket.on("evenement", (arg, callback) => {
-                            console.log(arg);
-                            if(arg!=undefined){
-                                localStorage.setItem("event", event);
-                                document.location.href=arg;
-                            }
-                        });
-            }, 1000);
+
+            // Sending the user data to the backend to create the account
+            try {
+                const response = await fetch('http://localhost:4001/auth/event', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(evenement) // Converting user object to JSON string
+                });
+
+                const data = await response.json();
+                console.log(data);
+
+                if (response.ok) {
+                    // Redirect to vendor page after successful addition
+                    document.location.href = "Vendeur";
+                } else {
+                    // Handle errors from the server 
+                    console.error('Error:', data);
+                }
+            } catch (error) {
+                console.error('There was an error creating the account:', error);
+            }
         }
-    }
     }
 
 
@@ -48,6 +64,7 @@ class Creation extends Component {
             <input type="text" id="description" class='input' placeholder="Description"/>
             <input type="text" id="prix" class='input' placeholder="Prix"/>
             <input type="text" id="date" class='input' placeholder="YYYY-MM-DD"/>
+            <input type="text" id="location" class='input' placeholder="Addresse"/>
             <input type="text" id="billets" class='input' placeholder="Billets totale"/>
                         <button id="submit" color="primary" type="submit" class='button'>Confirmer</button>
                 </form>
