@@ -1,8 +1,6 @@
 const express = require("express");
 const http = require("http");
-const socketIo = require("socket.io");
 const mongoose = require('mongoose');
-const path = require("path");
 const cors = require("cors");
 const nodemailer  = require("nodemailer");
 const bodyParser = require("body-parser");
@@ -29,7 +27,6 @@ app.use(cors({
 //creer le serveur
 const server = http.createServer(app);
 
-const io = socketIo(server);
 
 app.use(bodyParser.json());
 
@@ -49,28 +46,6 @@ contactEmail.verify((error)=>{
     console.log("Ready to send");
   }
 })
-
-//get fields for email
-const mail ={
-  from: "Prochévénement",
-  to: "kevinburger2000@gmail.com",
-  subject: "Reinitialiser votre mot de passe",
-  html: `<p>hi</p>`
-}
-contactEmail.sendMail(mail, (error)=>{
-  if(error){
-    console.log(error);
-
-  }
-});
-let vendeur; //vendeur ou non
-let nonvalide; //compte pas creer et si vendeur
-
-let routeCreation; //route pour changer de creation a magasiner ou vendeur
-let routeConnexion; //route pour changer de creation a magasiner ou vendeur
-
-let trouver;
-let trouverFind;
 
 var joueurs; //collection joueurs
 mongoose.connect('mongodb://127.0.0.1:27017/Prochevenement');
@@ -93,63 +68,10 @@ evenements = mongoose.model('evenements', new mongoose.Schema({
   description: String,
   prix: Number,
   date: String,
+  location: String,
   billets: Number
 }));
-/*
-io.on("connection", (socket) => {
 
-    //creation dun compte
-    if(vendeur==1){
-      routeCreation=["/Vendeur", user];
-    }
-    else if(vendeur==0){
-      routeCreation=["/Connexion", user];
-    }
-
-      socket.emit("utilisateur", routeCreation, (callback)=>{
-        vendeur=callback[4];
-        user=callback;
-        create(callback);
-        
-      });
-
-
-      //creation dun evenement
-  
-
-      socket.emit("evenement", "/Vendeur", (callback)=>{
-        createEvent(callback);
-        
-      });
-
-      /*connexion dun compte doesnt work yet
-      if(nonvalide==1){
-        routeConnexion=["/Vendeur",trouverFind];
-      }
-      else if(nonvalide==0){
-        routeConnexion=["/Magasiner",trouverFind];
-      }
-      else if(nonvalide==2){
-        routeConnexion="/Connexion";
-      }
-  
-        socket.emit("connexion", routeConnexion, (callback)=>{
-          trouver=trouverCompte(callback)
-          if(trouver[0]==false){
-            nonvalide=2;
-          }
-          else{
-            trouverFind=trouver[1] //pour liste de tous les info de lutilisateur
-            nonvalide=callback[1][4]; //pour savoir si vendeur ou non
-          }
-          
-          }
-        );
-
-
-
-});
-*/
 
 // Route de création d'un compte
 app.post('/auth/register', async (req, res) => {
@@ -174,6 +96,19 @@ app.post('/auth/register', async (req, res) => {
   try {
       await newUser.save();
       res.status(201).json({ message: "Compte créé avec succès" });
+      //Enovye un courriel lorsque le compte a ete creer
+      const mail ={
+      from: "Prochévénement",
+      to: courriel,
+      subject: "Message de bienvenue",
+      html: `<h1>Bienvenue a prochevenement ${nom}</h1>`
+    }
+    contactEmail.sendMail(mail, (error)=>{
+  if(error){
+    console.log(error);
+
+  }
+});
   } catch (error) {
       res.status(500).json({ message: "Erreur lors de la création du compte", error });
   }
@@ -206,34 +141,82 @@ app.post('/auth/login', async (req, res) => {
   });
 });
 
-/*
-async function create(user) {
-  const nouveauJoueur = new joueurs({ _id: new mongoose.Types.ObjectId(), nom: user[0], courriel:user[1], postal:user[2], motpasse:user[3], vendeur:user[4]
- });
-  await nouveauJoueur.save();
-  console.log(nouveauJoueur.nom);
+
+// Route de création d'un evenement
+app.post('/auth/event', async (req, res) => {
+  const { nom, description, prix, date, location,billets } = req.body;
+
+  // Vérifier si un utilisateur avec le même courriel existe déjà
+  const existingEvent = await evenements.findOne({ nom });
+  if (existingEvent) {
+      return res.status(400).json({ message: "Cet evenement existe déjà" });
+  }
+
+  // Créer un nouveau evenement
+  const newEvent = new evenements({
+      _id: new mongoose.Types.ObjectId(),
+      nom,
+      description,
+      prix,
+      date,
+      location,
+      billets
+  });
+
+  try {
+      await newEvent.save();
+      res.status(201).json({ message: "Evenement créé avec succès" });
+  } catch (error) {
+      res.status(500).json({ message: "Erreur lors de la création de levenement", error });
+  }
+});
+
+let verification;
+// Route de création d'un courriel avec code de verification
+app.post('/auth/forgot', async (req, res) => {
+  const { courriel } = req.body;
+
+  // Vérifier si un utilisateur avec le même courriel existe déjà
+  const existingUser = await joueurs.findOne({ courriel });
+  if (!existingUser) {
+      return res.status(400).json({ message: "Ce compte n'existe pas" });
+  }
+
+  verification=Math.floor(Math. random() * (9999 - 1000 + 1)) + 1000;
+
+  const mail ={
+    from: "Prochévénement",
+    to: courriel,
+    subject: "Code de verification",
+    html: `<h1>Votre code de verification est ${verification}</h1>`
+  }
+  contactEmail.sendMail(mail, (error)=>{
+if(error){
+  console.log(error);
+
 }
+});
+res.status(201).json({ message: "Courriel envoyer avec succès" });
 
-async function createEvent(event) {
+});
 
-  const nouveauEvent = new evenements({ _id: new mongoose.Types.ObjectId(), nom: event[0], description:event[1], prix:event[2], date:event[3], billets:event[4]
- });
-  await nouveauEvent.save();
-  console.log(nouveauEvent.nom);
-}
+app.post('/auth/reinitialize', async (req, res) => {
+  const { courriel, verificationfe, password } = req.body;
+    //verification code matches old one and email updated with new password findOneAndUpdate
+  if(verificationfe!=verification){
+    return res.status(400).json({ message: "Ce compte n'existe pas" });
+  }
+  //update it
+  const filter = { courriel: courriel };
+  const update = { motpasse: password };
+  doc = await joueurs.findOneAndUpdate(filter, update);
+  res.status(201).json({ message: "Compte modifier avec succès" });
 
 
-async function trouverCompte(user){
 
-const joueur = await joueurs.findOne({ 'courriel': user[1] }, 'nom courriel postal motpasse vendeur');
-userFind=[joueur.nom, joueur.courriel, joueur.postal, joueur.motpasse, joueur.vendeur];
-if(user[0]==userFind[0] && user[1]==userFind[1] && user[2]==userFind[3]){
-  return [true, userFind]
-}
-else{
-  return [false, 0]
-}
-}*/
+
+});
+
 
 
 server.listen(port, () => console.log(`Listening on port ${port}`));
