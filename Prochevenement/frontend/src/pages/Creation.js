@@ -1,46 +1,56 @@
 import React, { Component } from 'react';
 //import './App.css';
-import socketIOClient from "socket.io-client";
-const ENDPOINT = "http://192.168.37.1:4001";
 
 
 class Creation extends Component {
     async Submit(event) {
         if (event) {
-            event.preventDefault(); 
-            const socket = socketIOClient(ENDPOINT);
-            //client donne le surnom de l<utilisateur au serveur
-            var slider=2;
-            if(document.getElementById("slider").checked==true){
-                slider=1;
+            event.preventDefault();
+            
+            console.log('Form Submitted');  // Débogage
+            // Collecting user data from the form
+            const vendeur = document.getElementById("slider").checked ? 1 : 0; // Check the radio button for "Vendeur"
+            const user = {
+                nom: document.getElementById("nom").value,
+                courriel: document.getElementById("courriel").value,
+                postal: document.getElementById("postal").value,
+                motpasse: document.getElementById("password").value,
+                vendeur: vendeur
+            };
+
+            // Check if any fields are empty
+            const isAtLeastOneNull = Object.values(user).some(i => i === "");
+            if (isAtLeastOneNull) {
+                document.getElementById("hidden").style.display = "block"; // Show error if fields are empty
+                return;
             }
-            else{
-                slider=0;
+
+            // Sending the user data to the backend to create the account
+            try {
+                const response = await fetch('http://localhost:4001/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(user) // Converting user object to JSON string
+                });
+
+                const data = await response.json();
+                console.log(data);
+
+                if (response.ok) {
+                    // Redirect to login page after successful registration
+                    document.location.href = "Connexion";
+                } else {
+                    // Handle errors from the server 
+                    console.error('Error:', data);
+                }
+            } catch (error) {
+                console.error('There was an error creating the account:', error);
             }
-            var user=[document.getElementById("nom").value,document.getElementById("courriel").value, document.getElementById("postal").value, document.getElementById("password").value, slider];
-            console.log(user);
-            var isAtLeastOneNull =user.some(function(i) { return i === ""; })
-            if(isAtLeastOneNull===true){
-                document.getElementById("hidden").style.display="block";
-            }
-            else{
-            socket.on("utilisateur", (arg, callback) => {
-                callback(user);
-            });
-            //serbeur donne la route pour changer de page
-            setInterval(() => {
-                const socket = socketIOClient(ENDPOINT);
-                        socket.on("utilisateur", (arg, callback) => {
-                            console.log(arg);
-                            if(arg!=undefined){
-                                localStorage.setItem("nom", arg[1]);
-                                document.location.href=arg[0];
-                            }
-                        });
-            }, 1000);
         }
     }
-    }
+
 
     render() { 
         return <div id="background">
