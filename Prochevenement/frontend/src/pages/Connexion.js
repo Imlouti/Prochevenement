@@ -10,6 +10,9 @@ class Connexion extends Component {
 
         if (event) {
             event.preventDefault(); 
+            localStorage.setItem('courriel',document.getElementById("courriel").value);
+            localStorage.setItem('nom',document.getElementById("nom").value);
+
             const user = {
                 courriel: document.getElementById("courriel").value,
                 motpasse: document.getElementById("password").value
