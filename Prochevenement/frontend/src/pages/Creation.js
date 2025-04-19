@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 //import './App.css';
-
+import { IconButton } from "@mui/material";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { Button, Box, Link } from "@mui/material";
 
 class Creation extends Component {
     async Submit(event) {
         if (event) {
             event.preventDefault();
+            localStorage.setItem('nom',document.getElementById("nom").value);
             
             console.log('Form Submitted');  // Débogage
             // Collecting user data from the form
@@ -54,9 +57,9 @@ class Creation extends Component {
 
     render() { 
         return <div id="background">
-                <section id="back">
-        <a href="/" id="img"><img src="fleche.png"></img></a>
-        </section>
+                <IconButton href="/" sx={{color:"black", padding: 0}} size="large">
+<ArrowBackIosIcon/>
+</IconButton>
                 <h1>
         Creation d’un compte
         </h1>
@@ -75,8 +78,8 @@ class Creation extends Component {
 </div>
                 </form>
         <a id="hidden">Vous devez remplir tous les champs.</a>
+        <Link href="Connexion">Déja un compte? Connectez-vous.</Link>
 
-        <a href="Connexion">Déja un compte? Connectez-vous.</a>
 
 </div>
   }

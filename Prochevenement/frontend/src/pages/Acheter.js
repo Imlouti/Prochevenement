@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Navigator } from '../components/Navigator';
 //import './App.css';
+import { IconButton } from "@mui/material";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 class Acheter extends Component {
     async Creation(event) {
@@ -11,12 +13,9 @@ class Acheter extends Component {
         }
     render() { 
         return <div id="background">
-            <p id="two">
-                <section id="back">
-                <a href="Panier" id="img"><img src="fleche.png"></img></a>
-        </section>
-        <Navigator/>
-        </p>
+                <IconButton href="Panier" sx={{color:"black", padding: 0}} size="large">
+<ArrowBackIosIcon/>
+</IconButton>
 
         <form onSubmit={this.Creation}>
             <input type="text" id="nom" class='input' placeholder="Nom"/>

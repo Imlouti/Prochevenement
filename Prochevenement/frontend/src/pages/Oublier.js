@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 //import './App.css';
+import { IconButton } from "@mui/material";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 class Oublier extends Component {
     async Submit(event) {
@@ -51,9 +53,10 @@ class Oublier extends Component {
     }
     render() { 
         return <div id="background">
-                <section id="back">
-                <a href="Connexion" id="img"><img src="fleche.png"></img></a>
-        </section>        <h1>
+                <IconButton href="Connexion" sx={{color:"black", padding: 0}} size="large">
+<ArrowBackIosIcon/>
+</IconButton>
+                <h1>
         Oublier le mot de passe
         </h1>
         <form onSubmit={this.Submit}>

@@ -12,6 +12,11 @@ import { frFR } from '@mui/x-date-pickers/locales';
 import 'dayjs/locale/fr';
 import { Navigator } from "../components/Navigator";
 
+let nomUtilisateur = localStorage.getItem("nom");
+nomUtilisateur=nomUtilisateur.split(",");
+nomUtilisateur=nomUtilisateur[0].split(" ");
+nomUtilisateur=nomUtilisateur[0];
+
 
 
 const HighlightedDay = styled(PickersDay)(({ theme }) => ({
@@ -62,7 +67,7 @@ const SessionBooking = ({ doctor }) => {
         <p id="two">
 
                 <section id="user">
-                <p id="user">Bonjour, {getNom()} </p>
+                <p id="user">Bonjour, {nomUtilisateur} </p>
         </section>
         <section id="bar">
               <Navigator/>

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Navigator } from '../components/Navigator';
 //import './App.css';
+import { IconButton } from "@mui/material";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 class Annuler extends Component {
   async Creation(event) {
@@ -13,14 +15,10 @@ class Annuler extends Component {
 
     render() { 
         return <div>
-          <Navigator/>
-                      <p id="two">
+<IconButton href="Parametres" sx={{color:"black", padding: 0}} size="large">
+<ArrowBackIosIcon/>
+</IconButton>
 
-                <section id="back">
-                <a href="Parametres" id="img"><img src="fleche.png"></img></a>
-        </section>
-        
-</p>
         <h1>
         Nom de l’événement
                 </h1>
@@ -32,7 +30,7 @@ class Annuler extends Component {
                     <a>Date</a>
                     <a>Billets Restant</a>
 
-                    <button onClick={this.Creation}>Annuler l’achat</button>
+                    <button id="submit" class='button'>Annuler l’achat</button>
 
                     <a id="hidden">Enlever du panier.</a>
 

@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { Navigator } from '../components/Navigator';
 //import './App.css';
+import { IconButton } from "@mui/material";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { Button, Box, Link } from "@mui/material";
+
 
 class Modifier extends Component {
     async Submit(event) {
@@ -54,12 +58,10 @@ class Modifier extends Component {
     render() { 
         
         return             <div id="background">
-                        <p id="two">
 
-                <section id="back">
-                <a href="Parametres" id="img"><img src="fleche.png"></img></a>
-        </section>
-        </p>
+                <IconButton href="Parametres" sx={{color:"black", padding: 0}} size="large">
+<ArrowBackIosIcon/>
+</IconButton>
         <h1>
         Modification
         </h1>
@@ -70,7 +72,9 @@ class Modifier extends Component {
                         <button id="submit" color="primary" type="submit" class="button">Confirmer</button>
                 </form>
                 <a id="hidden">Tous les champs doivent etre remplie.</a>
-        <a href="Reinitialiser">Reinitialiser le mot de passe</a>
+                <Link href="Reinitialiser">Reinitialiser le mot de passe
+        </Link>
+
 
 
 </div>

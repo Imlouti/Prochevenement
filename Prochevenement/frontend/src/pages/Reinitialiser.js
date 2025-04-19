@@ -1,6 +1,8 @@
 
 import React, { Component } from 'react';
 import './styles.css';
+import { IconButton } from "@mui/material";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 class Reinitialiser extends Component {
     async Submit(event) {
@@ -53,9 +55,10 @@ class Reinitialiser extends Component {
 
     render() { 
         return <div id='background'>
-                <section id="back">
-                <a href="Oublier" id="img"><img src="fleche.png"></img></a>
-        </section>
+                
+                <IconButton href="Oublier" sx={{color:"black", padding: 0}} size="large">
+<ArrowBackIosIcon/>
+</IconButton>
         <h1>
         Réinitialiser le mot de passe
         </h1>

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { EventTable } from "../components/EventTable";
 import { Navigator } from '../components/Navigator';
+import { Button, Box, Link } from "@mui/material";
+
 const response = await fetch('http://localhost:4001/auth/eventTable', {
   method: 'GET',
   headers: {
@@ -24,29 +26,25 @@ var prix =result[i][1].prix;
 list.push(<td>{nom} {billets} {prix}</td>);
 
 }
-let nomUtilisateur =localStorage.getItem('nom');
+let nomUtilisateur = localStorage.getItem("nom");
+nomUtilisateur=nomUtilisateur.split(",");
+nomUtilisateur=nomUtilisateur[0].split(" ");
+nomUtilisateur=nomUtilisateur[0];
 //import './App.css';
 class Magasiner extends Component {
     
     render(){
     return( <div id="background">
-        
-      <p id="two">
-
-              <section id="user">
+        <Box sx={{display: 'flex', gap: 2}}> 
+        <section id="user">
               <p id="user">Bonjour, {nomUtilisateur} </p>
       </section>
       <section id="bar">
-<Navigator/>      </section></p>
-      <p id="two">
+<Navigator/>      </section></Box>
+<Box>
+<tr id='table'>{list}</tr>
+</Box>
 
-<section id="user">
-  <tr id='table'>{list}</tr>
-<p id="user">        <a href="Evenement"></a>
-</p>
-</section>
-
-</p>
 
 
 
