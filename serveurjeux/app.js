@@ -200,6 +200,7 @@ res.status(201).json({ message: "Courriel envoyer avec succès" });
 
 });
 
+//Route pour reinitialiser
 app.post('/auth/reinitialize', async (req, res) => {
   const { courriel, verificationfe, password } = req.body;
     //verification code matches old one and email updated with new password findOneAndUpdate
@@ -217,6 +218,45 @@ app.post('/auth/reinitialize', async (req, res) => {
 
 });
 
+//Route pour modifier
+app.post('/auth/modify', async (req, res) => {
+  
+  const { courriel, newcourriel, nom, postal } = req.body;
+  // Recherche de l'utilisateur dans la base de données
+  const existingUser = await joueurs.findOne({ courriel: courriel });
+    if (!existingUser) {
+        return res.status(400).json({ message: "Ce compte n'existe pas" });
+    }
+    //update it
+
+  const filter = { courriel: courriel };
+  const update = { nom: nom, courriel: newcourriel, postal: postal };
+  doc = await joueurs.findOneAndUpdate(filter, update);
+  res.status(201).json({ message: "Compte modifier avec succès" });
+
+
+
+
+});
+
+//Route pour afficher tous les evenements
+app.get('/auth/eventTable', async (req, res) => {
+    
+  const events = await evenements.find();
+    if (!events) {
+        return res.status(400).json({ message: "Pas d'evenements" });
+    }
+    res.send(events);
+
+//                const response = await fetch('http://localhost:4001/auth/eventTable') // Converting user object to JSON string
+
+
+
+});
+
+
 
 
 server.listen(port, () => console.log(`Listening on port ${port}`));
+
+
