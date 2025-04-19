@@ -8,7 +8,7 @@ const TAX_RATE = 0.07;
 
 // Currency Formatting
 function ccyFormat(num) {
-  return `${num.toFixed(2)}`;
+  return num;// `${num.toFixed(2)}`;
 }
 
 function createEventDetails(event, vendor, ...ticketDetails) {
