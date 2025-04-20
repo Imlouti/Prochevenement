@@ -44,7 +44,7 @@ export const Navigator = () => {
                 </Nav.Item>
                 <Nav.Item>
                 <Tooltip title="Panier">
-                    <IconButton href="Panier" sx={{color:"black", padding: 0}} size="large">
+                    <IconButton href="Magasiner" sx={{color:"black", padding: 0}} size="large">
                         <ShoppingCartIcon/>
                     </IconButton>
                     </Tooltip>
@@ -69,3 +69,17 @@ export const Navigator = () => {
     );
 
 };
+/*
+                <Tooltip title="Panier">
+                    <IconButton href="Panier" sx={{color:"black", padding: 0}} size="large">
+                        <ShoppingCartIcon/>
+                    </IconButton>
+                    </Tooltip>
+changer a:
+                <Tooltip title="Panier">
+                    <IconButton href="Magasiner" sx={{color:"black", padding: 0}} size="large">
+                        <ShoppingCartIcon/>
+                    </IconButton>
+                    </Tooltip>
+a cause le panier n'est pas fini
+*/
