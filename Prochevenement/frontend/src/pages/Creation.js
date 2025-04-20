@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 //import './App.css';
+import { Grid2 } from '@mui/material';
 import socketIOClient from "socket.io-client";
+import RegisterComp from '../components/RegisterComp';
+
 const ENDPOINT = "http://192.168.37.1:4001";
 
 
@@ -50,20 +53,17 @@ class Creation extends Component {
                 <h1>
         Creation d’un compte
         </h1>
-        <form onSubmit={this.Submit}>
-        <input type="text" id="nom" class='input' placeholder="Nom"/>
-            <input type="text" id="courriel" class='input' placeholder="Courriel"/>
-            <input type="text" id="postal" class='input' placeholder="Code postale"/>
-            <input type="text" id="password" class='input' placeholder="Mot de passe"/>
-                        <button id="submit" color="primary" type="submit" class='button'>Créer le compte</button>
-                        <div id="switch">
-            <label class="container">Vendeur
-  <input type="radio" id="slider"></input>
-  <span class="checkmark"></span>
-</label>
 
-</div>
-                </form>
+        <Grid2
+        container
+        spacing={0}
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        >
+            <RegisterComp/>
+        </Grid2>
+
         <a id="hidden">Vous devez remplir tous les champs.</a>
 
         <a href="Connexion">Déja un compte? Connectez-vous.</a>

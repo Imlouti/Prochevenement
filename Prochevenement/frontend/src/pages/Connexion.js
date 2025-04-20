@@ -1,8 +1,9 @@
 
 import React, { Component } from 'react';
+import { Grid2 } from "@mui/material";
 //import './App.css';
 
-//import LoginComp from '../components/LoginComp';
+import LoginComp from '../components/LoginComp';
 
 import socketIOClient from "socket.io-client";
 const ENDPOINT = "http://192.168.37.1:4001";
@@ -14,30 +15,12 @@ class Connexion extends Component {
         if (event) {
             event.preventDefault(); 
             document.location.href="Magasiner";
-                    /*code below doesnt work yet
-
-            const socket = socketIOClient(ENDPOINT);
-            //client donne le surnom de l<utilisateur au serveur
-            var user=[document.getElementById("nom").value,document.getElementById("courriel").value, document.getElementById("password").value];
-            socket.on("connexion", (arg, callback) => {
-                callback(user);
-            });
-            //serbeur donne la route pour changer de page
-            setInterval(() => {
-                const socket = socketIOClient(ENDPOINT);
-                        socket.on("connexion", (arg, callback) => {
-                            console.log(arg);
-                            if(arg!=undefined || arg=="/Connexion"){
-                                localStorage.setItem("nom", arg[1]);
-                                document.location.href=arg[0];
-                            }
-                            else if(arg=="/Connexion"){
-                                document.getElementById("hidden").style.display="block";
-                            }
-                        });
-            }, 1000);*/
+                    
         }
     }
+
+    
+
         
     render() { 
         return(
@@ -50,6 +33,16 @@ class Connexion extends Component {
 <h1>
 Connexion
 </h1>
+
+<Grid2
+  container
+  spacing={0}
+  direction="column"
+  alignItems="center"
+  justifyContent="center"
+>
+    <LoginComp/>
+</Grid2>
 <form onSubmit={this.Submit}>
     <input type="text" id="nom" class="input" placeholder="Nom"/>
     <input type="text" id="courriel" class="input" placeholder="Courriel"/>
