@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Navigator } from '../components/Navigator';
-//import './App.css';
 import { Button, Box, Link } from "@mui/material";
 
 let nomUtilisateur = localStorage.getItem("nom");

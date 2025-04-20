@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Navigator } from '../components/Navigator';
-//import './App.css';
 import { IconButton } from "@mui/material";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 

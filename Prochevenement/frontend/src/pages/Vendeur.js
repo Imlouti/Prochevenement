@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-//import './App.css';
 import { IconButton, Link } from "@mui/material";
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import AddIcon from '@mui/icons-material/Add';
 
 
-class Acheter extends Component {
+class Vendeur extends Component {
     render() { 
         return <div id="background">
             <p id="two">
@@ -41,4 +40,4 @@ class Acheter extends Component {
   }
 }
  
-export default Acheter;
+export default Vendeur;

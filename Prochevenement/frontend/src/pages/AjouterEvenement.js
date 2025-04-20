@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-//import './App.css';
 import { IconButton } from "@mui/material";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import {  Link, Grid2 } from "@mui/material";
+import AddEvent from '../components/AddEvent';
 
 
-class Creation extends Component {
+class AjouterEvenement extends Component {
     async Submit(event) {
         if (event) {
             event.preventDefault();
@@ -62,15 +63,17 @@ class Creation extends Component {
                 <h1>
         Creation d’un événement
         </h1>
-        <form onSubmit={this.Submit}>
-        <input type="text" id="nomevenement" class='input' placeholder="Nom"/>
-            <input type="text" id="description" class='input' placeholder="Description"/>
-            <input type="text" id="prix" class='input' placeholder="Prix"/>
-            <input type="text" id="date" class='input' placeholder="YYYY-MM-DD"/>
-            <input type="text" id="location" class='input' placeholder="Addresse"/>
-            <input type="text" id="billets" class='input' placeholder="Billets totale"/>
-                        <button id="submit" color="primary" type="submit" class='button'>Confirmer</button>
-                </form>
+                <Grid2
+                          container
+                          spacing={0}
+                          direction="column"
+                          alignItems="center"
+                          justifyContent="center"
+                        >
+                            <AddEvent/>
+                        </Grid2>
+        
+        
                 <a id="hidden">Vous devez remplir tous les champs.</a>
 
 
@@ -78,4 +81,4 @@ class Creation extends Component {
   }
 }
  
-export default Creation;
+export default AjouterEvenement;

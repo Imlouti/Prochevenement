@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { EventTable } from "../components/EventTable";
 import { Navigator } from '../components/Navigator';
-import { Button, Box, Link } from "@mui/material";
+import {  Box } from "@mui/material";
 
 const response = await fetch('http://localhost:4001/auth/eventTable', {
   method: 'GET',
@@ -10,6 +10,9 @@ const response = await fetch('http://localhost:4001/auth/eventTable', {
   }});
 
 const data = await response.json();
+var list =[];
+list.push("No events");
+/*
 var result = Object.keys(data).map((key) => [key, data[key]]);
 
 console.log(result[0][1].nom);
@@ -25,7 +28,7 @@ var prix =result[i][1].prix;
 
 list.push(<td>{nom} {billets} {prix}</td>);
 
-}
+}*/
 let nomUtilisateur = localStorage.getItem("nom");
 nomUtilisateur=nomUtilisateur.split(",");
 nomUtilisateur=nomUtilisateur[0].split(" ");

@@ -1,7 +1,4 @@
-"use server"
-import React, { Component } from 'react';
-import { Table } from '@mui/material';
-import { Navigator } from '../components/Navigator';
+import React from 'react';
 
 
 

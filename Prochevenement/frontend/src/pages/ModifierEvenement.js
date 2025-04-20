@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-//import './App.css';
 
-class Creation extends Component {
+class ModifierEvenement extends Component {
     async Creation(event) {
         if (event) {
             event.preventDefault(); 
@@ -30,4 +29,4 @@ Modification d'un événement        </h1>
   }
 }
  
-export default Creation;
+export default ModifierEvenement;

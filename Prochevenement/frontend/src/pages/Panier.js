@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Navigator } from '../components/Navigator';
 import { CartTable } from '../components/CartTable';
-//import './App.css';
-import { Button, Box, Link } from "@mui/material";
+import { Button, Box } from "@mui/material";
 
 let nomUtilisateur = localStorage.getItem("nom");
 nomUtilisateur=nomUtilisateur.split(",");

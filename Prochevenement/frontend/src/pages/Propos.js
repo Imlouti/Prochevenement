@@ -7,13 +7,6 @@ nomUtilisateur=nomUtilisateur[0].split(" ");
 nomUtilisateur=nomUtilisateur[0];
 
 function Propos() {
-  function getNom(){
-    let message = localStorage.getItem("nom");
-    message=message.split(",");
-    message=message[0].split(" ");
-    return message[0]
-    
-    }
     
     
         

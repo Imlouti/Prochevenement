@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import dayjs from "dayjs";
-import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -52,13 +51,6 @@ const SessionBooking = ({ doctor }) => {
 
   const today = dayjs();
 
-  function getNom(){
-    let message = localStorage.getItem("nom");
-    message=message.split(",");
-    message=message[0].split(" ");
-    return message[0]
-    
-    }
 
 
   return (

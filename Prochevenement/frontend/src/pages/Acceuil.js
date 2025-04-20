@@ -2,16 +2,14 @@
 
 import React, { Component } from 'react';
 import "./styles.css";
-import Map from "./map";
-import { Button, Box, Link } from "@mui/material";
+import { Button, Box, Link } from "@mui/material"; //mui pour le boutton et le lien
 
-
-//https://ujjwaltiwari2.medium.com/a-guide-to-using-openstreetmap-with-react-70932389b8b1 guide to map, doesnt work
 class Acceuil extends Component {
 
+    //Va afficher des titres, une image, un boutton pour se connecter et un link pour creer un compte
     render() { 
         return     <div id="background">
-        <a><img src="logo.png"></img></a>
+        <a><img src="logo.png"></img></a> 
         <h1>
         Bienvenue a Prochévénements
         </h1>
