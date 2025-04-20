@@ -122,11 +122,11 @@ app.post('/auth/login', async (req, res) => {
   // Recherche de l'utilisateur dans la base de données
   const joueur = await joueurs.findOne({ courriel });
 
-  if (!joueur) {
+  if (!joueur) { //s'il n'existe pas le message d'erreur va s'afficher au frontend (voire Connexion.js pour plus de details)
       return res.status(400).json({ message: 'Utilisateur non trouvé' });
   }
 
-  // Vérification du mot de passe
+  // Vérification du mot de passe, sinon le message d'erreur va s'afficher au frontend (voire Connexion.js pour plus de details)
   if (joueur.motpasse !== motpasse) {
       return res.status(400).json({ message: 'Mot de passe incorrect' });
   }
@@ -146,7 +146,7 @@ app.post('/auth/login', async (req, res) => {
 app.post('/auth/event', async (req, res) => {
   const { nom, description, prix, date, location,billets } = req.body;
 
-  // Vérifier si un utilisateur avec le même courriel existe déjà
+  // Vérifier si un evenement avec le même nom existe déjà
   const existingEvent = await evenements.findOne({ nom });
   if (existingEvent) {
       return res.status(400).json({ message: "Cet evenement existe déjà" });
@@ -167,7 +167,7 @@ app.post('/auth/event', async (req, res) => {
       await newEvent.save();
       res.status(201).json({ message: "Evenement créé avec succès" });
   } catch (error) {
-      res.status(500).json({ message: "Erreur lors de la création de levenement", error });
+      res.status(500).json({ message: "Erreur lors de la création de l'événement", error });
   }
 });
 
@@ -184,6 +184,7 @@ app.post('/auth/forgot', async (req, res) => {
 
   verification=Math.floor(Math. random() * (9999 - 1000 + 1)) + 1000;
 
+  //envoyer un courriel avec le code de verification
   const mail ={
     from: "Prochévénement",
     to: courriel,
@@ -203,11 +204,11 @@ res.status(201).json({ message: "Courriel envoyer avec succès" });
 //Route pour reinitialiser
 app.post('/auth/reinitialize', async (req, res) => {
   const { courriel, verificationfe, password } = req.body;
-    //verification code matches old one and email updated with new password findOneAndUpdate
+  //le code de vérification doit correspondre à l'ancien
   if(verificationfe!=verification){
     return res.status(400).json({ message: "Ce compte n'existe pas" });
   }
-  //update it
+  //le compte est mis à jour
   const filter = { courriel: courriel };
   const update = { motpasse: password };
   doc = await joueurs.findOneAndUpdate(filter, update);
@@ -227,7 +228,7 @@ app.post('/auth/modify', async (req, res) => {
     if (!existingUser) {
         return res.status(400).json({ message: "Ce compte n'existe pas" });
     }
-    //update it
+  //le compte est mis à jour
 
   const filter = { courriel: courriel };
   const update = { nom: nom, courriel: newcourriel, postal: postal };
@@ -247,10 +248,6 @@ app.get('/auth/eventTable', async (req, res) => {
         return res.status(400).json({ message: "Pas d'evenements" });
     }
     res.send(events);
-
-//                const response = await fetch('http://localhost:4001/auth/eventTable') // Converting user object to JSON string
-
-
 
 });
 
