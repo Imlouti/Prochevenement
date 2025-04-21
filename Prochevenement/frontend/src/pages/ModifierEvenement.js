@@ -1,32 +1,48 @@
 import React, { Component } from 'react';
+import { IconButton } from "@mui/material";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import {  Box, Button, Link, Grid2 } from "@mui/material";
+import ModifyEvent from '../components/ModifyEvent';
 
-class ModifierEvenement extends Component {
-    async Creation(event) {
-        if (event) {
-            event.preventDefault(); 
-            document.location.href="Vendeur";
-        }
-        }
 
+
+class Evenement extends Component {
+    //Va afficher une fleche de retour a la page parametres, le titre de la page, le formulaire de modification de compte (voire le fichier components/ModifyComp pour plus d'explication) et un lien pour reinitialiser le mot de passe
     render() { 
-        return <div id="background">
-                <section id="back">
-        <a href="Vendeur" id="img"><img src="fleche.png"></img></a>
-        </section>
-                <h1>
-Modification d'un événement        </h1>
-        <form onSubmit={this.Creation}>
-        <input type="text" id="nomevenement" class='input' placeholder="Nom"/>
-            <input type="text" id="description" class='input' placeholder="Description"/>
-            <input type="text" id="prix" class='input' placeholder="Prix"/>
-            <input type="text" id="date" class='input' placeholder="Date"/>
-            <input type="text" id="billets" class='input' placeholder="Billets totale"/>
-                        <button id="submit" color="primary" type="submit" class='button'>Confirmer</button>
-                </form>
+        
+        return              <div id="background">
+        <p id="two">
+
+        <IconButton href="Vendeur" sx={{color:"black", padding: 0}} size="large">
+<ArrowBackIosIcon/>
+</IconButton>
+</p>
+
+      
+  
+  <Grid2
+                    container
+                    spacing={0}
+                    direction="column"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                      <ModifyEvent/>
+                  </Grid2>
+
+
+
+
+      <a id="hidden">Pas de billets restant.</a>
+
+
+
+
 
 
 </div>
-  }
+    
+}
 }
  
-export default ModifierEvenement;
+export default Evenement;

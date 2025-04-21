@@ -11,12 +11,22 @@ import { frFR } from '@mui/x-date-pickers/locales';
 import 'dayjs/locale/fr';
 import { Navigator } from "../components/Navigator";
 
-let nomUtilisateur = localStorage.getItem("nom");
-nomUtilisateur=nomUtilisateur.split(",");
-nomUtilisateur=nomUtilisateur[0].split(" ");
-nomUtilisateur=nomUtilisateur[0];
+let nomUtilisateur;
+
+if (localStorage.getItem("nom")!=undefined){
 
 
+  nomUtilisateur = localStorage.getItem("nom");
+  nomUtilisateur=nomUtilisateur.split(",");
+  nomUtilisateur=nomUtilisateur[0].split(" ");
+  nomUtilisateur=nomUtilisateur[0];
+  }
+  else{
+          nomUtilisateur="";
+  }
+  if(nomUtilisateur==undefined){
+        nomUtilisateur="";
+  }
 
 const HighlightedDay = styled(PickersDay)(({ theme }) => ({
   "&.Mui-selected": {

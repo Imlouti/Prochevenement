@@ -3,37 +3,23 @@ import { EventTable } from "../components/EventTable";
 import { Navigator } from '../components/Navigator';
 import {  Box } from "@mui/material";
 
-const response = await fetch('http://localhost:4001/auth/eventTable', {
-  method: 'GET',
-  headers: {
-      'Content-Type': 'application/json'
-  }});
 
-const data = await response.json();
-var list =[];
-list.push("No events");
-/*
-var result = Object.keys(data).map((key) => [key, data[key]]);
+let nomUtilisateur;
 
-console.log(result[0][1].nom);
-
-var i;
-var list =[];
-for (i = 0; i < result.length; i++) {
-
-var nom =result[i][1].nom;
-var billets =result[i][1].billets;
-var prix =result[i][1].prix;
+if (localStorage.getItem("nom")!=undefined){
 
 
-list.push(<td>{nom} {billets} {prix}</td>);
-
-}*/
-let nomUtilisateur = localStorage.getItem("nom");
-nomUtilisateur=nomUtilisateur.split(",");
-nomUtilisateur=nomUtilisateur[0].split(" ");
-nomUtilisateur=nomUtilisateur[0];
-//import './App.css';
+  nomUtilisateur = localStorage.getItem("nom");
+  nomUtilisateur=nomUtilisateur.split(",");
+  nomUtilisateur=nomUtilisateur[0].split(" ");
+  nomUtilisateur=nomUtilisateur[0];
+  }
+  else{
+          nomUtilisateur="";
+  }
+  if(nomUtilisateur==undefined){
+        nomUtilisateur="";
+  }//import './App.css';
 class Magasiner extends Component {
     
     render(){
@@ -45,7 +31,7 @@ class Magasiner extends Component {
       <section id="bar">
 <Navigator/>      </section></Box>
 <Box>
-<tr id='table'>{list}</tr>
+<EventTable/>
 </Box>
 
 

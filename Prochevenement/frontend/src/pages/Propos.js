@@ -1,11 +1,22 @@
 import React, { Component } from 'react';
 import { Navigator } from '../components/Navigator';
 //import './App.css';
-let nomUtilisateur = localStorage.getItem("nom");
-nomUtilisateur=nomUtilisateur.split(",");
-nomUtilisateur=nomUtilisateur[0].split(" ");
-nomUtilisateur=nomUtilisateur[0];
+let nomUtilisateur;
 
+if (localStorage.getItem("nom")!=undefined){
+
+
+  nomUtilisateur = localStorage.getItem("nom");
+  nomUtilisateur=nomUtilisateur.split(",");
+  nomUtilisateur=nomUtilisateur[0].split(" ");
+  nomUtilisateur=nomUtilisateur[0];
+  }
+  else{
+          nomUtilisateur="";
+  }
+  if(nomUtilisateur==undefined){
+        nomUtilisateur="";
+  }  
 function Propos() {
     
     

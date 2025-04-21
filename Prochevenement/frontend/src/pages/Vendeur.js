@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { IconButton, Link } from "@mui/material";
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import AddIcon from '@mui/icons-material/Add';
+import {  Box } from "@mui/material";
+import { VendorTable } from "../components/VendorTable";
 
 
 class Vendeur extends Component {
@@ -24,7 +26,9 @@ class Vendeur extends Component {
         <h1>
             Événements
         </h1>
-        <Link href="ModifierEvenement">Modifier Evenement</Link>
+        <Box>
+<VendorTable/>
+</Box>
 
 
 
