@@ -3,6 +3,9 @@ import React, { Component } from 'react';
 //import './App.css';
 
 //import LoginComp from '../components/LoginComp';
+import { IconButton } from "@mui/material";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { Button, Box, Link } from "@mui/material";
 
 
 class Connexion extends Component {
@@ -11,7 +14,6 @@ class Connexion extends Component {
         if (event) {
             event.preventDefault(); 
             localStorage.setItem('courriel',document.getElementById("courriel").value);
-            localStorage.setItem('nom',document.getElementById("nom").value);
 
             const user = {
                 courriel: document.getElementById("courriel").value,
@@ -58,14 +60,13 @@ class Connexion extends Component {
                 return <div id="background">
 
 
-                <section id="back">
-                <a href="/" id="img"><img src="fleche.png"></img></a>
-        </section>
+                <IconButton href="/" sx={{color:"black", padding: 0}} size="large">
+<ArrowBackIosIcon/>
+</IconButton>
         <h1>
         Connexion
         </h1>
         <form onSubmit={this.Submit}>
-            <input type="text" id="nom" class="input" placeholder="Nom"/>
             <input type="text" id="courriel" class="input" placeholder="Courriel"/>
             <input type="text" id="password" class="input" placeholder="Mot de passe"/>
                         <button id="submit" class="button" color="primary" type="submit">Connexion</button>
@@ -73,12 +74,13 @@ class Connexion extends Component {
 
                 </form>
                 <a id="hidden">Ce compte n'existe pas.</a>
-                <p id="two">
 
-        <a href="Creation">Pas de compte? Créer un compte.</a>
-        <a href="Oublier" id="oublier">Oublier le mot de passe</a>
-        
-        </p>
+    
+<Box sx={{display: 'flex', gap: 2}}>
+<Link href="Creation">Pas de compte? Créer un compte.</Link>
+<Link href="Oublier" id='oublier'>Oublier le mot de passe</Link>
+
+</Box>
 
 
 </div>

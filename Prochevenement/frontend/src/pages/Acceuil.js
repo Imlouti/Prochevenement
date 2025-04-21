@@ -3,15 +3,11 @@
 import React, { Component } from 'react';
 import "./styles.css";
 import Map from "./map";
+import { Button, Box, Link } from "@mui/material";
+
 
 //https://ujjwaltiwari2.medium.com/a-guide-to-using-openstreetmap-with-react-70932389b8b1 guide to map, doesnt work
 class Acceuil extends Component {
-    async Connexion(event) {
-        if (event) {
-            event.preventDefault(); 
-            document.location.href="Connexion";
-        }
-        }
 
     render() { 
         return     <div id="background">
@@ -23,10 +19,21 @@ class Acceuil extends Component {
         Les événements proche de vous
         </h2>
         <img src="map.png" id="map"></img>
-        <form onSubmit={this.Connexion}>
-            <input type="submit" class="input" value="Se connecter"/>
-        </form>
-        <a href="Creation">Pas de compte? Créer un compte.</a>
+        <Box textAlign='center'>
+        <Button variant='contained' size='large'
+  onClick={() => {
+    document.location.href="Connexion";
+
+  }}
+>
+  Se conntecter
+</Button>
+<Link href="Creation">Pas de compte? Créer un compte.</Link>
+
+</Box>
+
+
+
 
 </div>
 

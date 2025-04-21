@@ -12,6 +12,15 @@ import { frFR } from '@mui/x-date-pickers/locales';
 import 'dayjs/locale/fr';
 import { Navigator } from "../components/Navigator";
 
+let nomUtilisateur = localStorage.getItem("nom");
+if (nomUtilisateur) {
+    nomUtilisateur = nomUtilisateur.split(",");
+    nomUtilisateur = nomUtilisateur[0].split(" ");
+    nomUtilisateur = nomUtilisateur[0]; // Utilisation du nom
+} else {
+    console.log("Nom d'utilisateur introuvable dans le localStorage.");
+    nomUtilisateur = "Invité"; // Valeur par défaut si l'utilisateur n'est pas dans le localStorage
+}
 
 
 const HighlightedDay = styled(PickersDay)(({ theme }) => ({
@@ -62,7 +71,7 @@ const SessionBooking = ({ doctor }) => {
         <p id="two">
 
                 <section id="user">
-                <p id="user">Bonjour, {getNom()} </p>
+                <p id="user">Bonjour, {nomUtilisateur} </p>
         </section>
         <section id="bar">
               <Navigator/>

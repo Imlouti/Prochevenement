@@ -1,61 +1,72 @@
 import React, { Component } from 'react';
 //import './App.css';
+import { IconButton } from "@mui/material";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+
 
 class Creation extends Component {
     async Submit(event) {
         if (event) {
-            event.preventDefault();
-            
-            console.log('Form Submitted');  // Débogage
-            // Collecting event data from the form
-            const evenement = {
-                nom: document.getElementById("nomevenement").value,
-                description: document.getElementById("description").value,
-                prix: document.getElementById("prix").value,
-                date: document.getElementById("date").value,
-                location: document.getElementById("location").value,
-                billets: document.getElementById("billets").value
-            };
-
-            // Check if any fields are empty
-            const isAtLeastOneNull = Object.values(evenement).some(i => i === "");
-            if (isAtLeastOneNull) {
-                document.getElementById("hidden").style.display = "block"; // Show error if fields are empty
-                return;
+          event.preventDefault();
+      
+          // Récupérer l'ID du vendeur depuis localStorage
+          const vendeurId = localStorage.getItem('vendeurId');  // L'ID du vendeur doit être stocké dans localStorage
+      
+          // Vérifier si l'ID du vendeur est disponible
+          if (!vendeurId) {
+            console.error("ID du vendeur manquant");
+            return;  // Arrêter le processus si l'ID du vendeur est manquant
+          }
+      
+          // Collecter les données de l'événement
+          const evenement = {
+            nom: document.getElementById("nomevenement").value,
+            description: document.getElementById("description").value,
+            prix: document.getElementById("prix").value,
+            date: document.getElementById("date").value,
+            location: document.getElementById("location").value,
+            billets: document.getElementById("billets").value,
+            vendeurId,  // Ajouter l'ID du vendeur ici
+          };
+      
+          // Vérifier si un champ est vide
+          const isAtLeastOneNull = Object.values(evenement).some(i => i === "");
+          if (isAtLeastOneNull) {
+            document.getElementById("hidden").style.display = "block"; // Afficher une erreur si des champs sont vides
+            return;
+          }
+      
+          // Envoyer la requête POST pour créer un événement
+          try {
+            const response = await fetch('http://localhost:4001/auth/event', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(evenement),  // Convertir l'objet événement en JSON
+            });
+      
+            const data = await response.json();
+      
+            if (response.ok) {
+              console.log(data);
+              document.location.href = "Vendeur";  // Rediriger après l'ajout réussi
+            } else {
+              console.error('Erreur lors de la création de l\'événement', data);
             }
-
-            // Sending the user data to the backend to create the account
-            try {
-                const response = await fetch('http://localhost:4001/auth/event', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(evenement) // Converting user object to JSON string
-                });
-
-                const data = await response.json();
-                console.log(data);
-
-                if (response.ok) {
-                    // Redirect to vendor page after successful addition
-                    document.location.href = "Vendeur";
-                } else {
-                    // Handle errors from the server 
-                    console.error('Error:', data);
-                }
-            } catch (error) {
-                console.error('There was an error creating the account:', error);
-            }
+          } catch (error) {
+            console.error('Erreur de requête', error);
+          }
         }
-    }
+      }
+      
 
 
     render() { 
         return <div id="background">
-                <section id="back">
-        <a href="Vendeur" id="img"><img src="fleche.png"></img></a>
-        </section>
+                               <IconButton href="Vendeur" sx={{color:"black", padding: 0}} size="large">
+<ArrowBackIosIcon/>
+</IconButton>
                 <h1>
         Creation d’un événement
         </h1>

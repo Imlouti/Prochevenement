@@ -1,40 +1,43 @@
 import React, { Component } from 'react';
 import { Navigator } from '../components/Navigator';
-//import './App.css';
+import { Button, Box, Link } from "@mui/material";
+
+// Vérification de l'existence du nom dans le localStorage
+let nomUtilisateur = localStorage.getItem("nom");
+if (nomUtilisateur) {
+    nomUtilisateur = nomUtilisateur.split(",");
+    nomUtilisateur = nomUtilisateur[0].split(" ");
+    nomUtilisateur = nomUtilisateur[0]; // Utilisation du nom
+} else {
+    console.log("Nom d'utilisateur introuvable dans le localStorage.");
+}
 
 function Parametres() {
-  function getNom(){
-    let message = localStorage.getItem("nom");
-    message=message.split(",");
-    message=message[0].split(" ");
-    return message[0]
-    
-
-    }
-    
-    
-    return( <div id="background">
-        
-        <p id="two">
-
+    return (
+        <div id="background">
+            <Box sx={{ display: 'flex', gap: 2 }}>
                 <section id="user">
-                <p id="user">Bonjour, {getNom()} </p>
-        </section>
-        <section id="bar">
-        <Navigator/>
-        </section></p>
-        <a href="Modifier">Modifier le compte</a>
+                    <p id="user">Bonjour, {nomUtilisateur} </p>
+                </section>
+                <section id="bar">
+                    <Navigator />
+                </section>
+            </Box>
 
-        <a href="Annuler">Annuler un evenement</a>
+            <Box textAlign='center'>
+                <Button
+                    variant='contained'
+                    size='large'
+                    onClick={() => {
+                        document.location.href = "Modifier";
+                    }}
+                >
+                    Modifier le compte
+                </Button>
+                <Link href="Annuler">Annuler un événement</Link>
+            </Box>
+        </div>
+    );
+}
 
-
-
-
-
-
-
-</div>
-        )
-  }
- 
 export default Parametres;
