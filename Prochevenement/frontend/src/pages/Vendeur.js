@@ -9,7 +9,7 @@ import { VendorTable } from "../components/VendorTable";
 class Vendeur extends Component {
     render() { 
         return <div id="background">
-            <p id="two">
+            <div id="two">
                 <section id="back">
                 <IconButton href="AjouterEvenement" sx={{color:"black", padding: 0}} size="large">
                         <AddIcon/>
@@ -21,7 +21,7 @@ class Vendeur extends Component {
                         <ExitToAppIcon/>
                     </IconButton>
         </section>
-        </p>
+        </div>
 
         <h1>
             Événements

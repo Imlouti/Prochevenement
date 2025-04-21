@@ -20,7 +20,7 @@ app.use(bodyParser.json());  // Pour analyser les requêtes JSON
 app.use(cors({
     origin: 'http://localhost:3000', // Permet les requêtes de ce domaine
     methods: ['GET', 'POST'], // Autorise les méthodes GET et POST
-    allowedHeaders: ['Content-Type'], // Permet d'envoyer le Content-Type dans les en-têtes
+    allowedHeaders: ['Content-Type', 'Authorization'], // Permet d'envoyer le Content-Type dans les en-têtes
 }));
 
 
@@ -137,19 +137,31 @@ app.post('/auth/login', async (req, res) => {
       message: "Connexion réussie",
       nom: joueur.nom,  // Renvoie le nom de l'utilisateur
       role: joueur.vendeur === 1 ? 'Vendeur' : 'Utilisateur',  // Renvoie le rôle (Vendeur ou Utilisateur)
+      vendeurId: joueur._id,  // ID du vendeur
       route: route  // Envoi de la route de redirection
   });
 });
 
-
+var VendeurEvenement; 
+VendeurEvenement = mongoose.model('vendeur_evenement', new mongoose.Schema({
+  vendeurId: { type: mongoose.Schema.Types.ObjectId, ref: 'joueurs' }, // Référence à la collection
+  eventId: { type: mongoose.Schema.Types.ObjectId, ref: 'evenements' }
+}));
 // Route de création d'un evenement
 app.post('/auth/event', async (req, res) => {
-  const { nom, description, prix, date, location,billets } = req.body;
+  const { nom, description, prix, date, location,billets,vendeurId } = req.body;
 
+   // Vérifier si l'utilisateur est connecté et obtenir son ID
+   
+   if (!vendeurId) {
+       return res.status(400).json({ message: "Vendeur non authentifié" });
+   }  
+  
   // Vérifier si un evenement avec le même nom existe déjà
   const existingEvent = await evenements.findOne({ nom });
   if (existingEvent) {
       return res.status(400).json({ message: "Cet evenement existe déjà" });
+      console.log("Cet evenement existe déjà")
   }
 
   // Créer un nouveau evenement
@@ -165,11 +177,52 @@ app.post('/auth/event', async (req, res) => {
 
   try {
       await newEvent.save();
+      console.log("Événement créé avec succès");
+       // Ajouter une entrée dans la table vendeur_evenement pour associer le vendeur à l'événement
+       const newVendeurEvenement = new VendeurEvenement({
+        vendeurId: vendeurId,  // ID du vendeur
+        eventId: newEvent._id,  // ID de l'événement
+      });
+
+      await newVendeurEvenement.save();
+
+
       res.status(201).json({ message: "Evenement créé avec succès" });
   } catch (error) {
+      console.error("Erreur lors de la création de l'événement:", error);
       res.status(500).json({ message: "Erreur lors de la création de l'événement", error });
   }
+  
 });
+
+// Route pour récupérer les événements d'un vendeur
+// S'assurer d'avoir un modèle pour la collection "vendeur_evenement"
+app.post('/auth/vendor-events', async (req, res) => {
+  const { vendeurId } = req.body;
+  if (!vendeurId) {
+      return res.status(400).json({ message: "Vendeur non authentifié" });
+  }
+
+  try {
+      // Récupérer les événements associés à ce vendeur
+      const vendeurEvents = await VendeurEvenement.find({ vendeurId: vendeurId })
+          .populate('eventId') // Récupérer les détails de l'événement à partir de la collection "evenements"
+          .exec();
+
+      if (!vendeurEvents || vendeurEvents.length === 0) {
+          return res.status(404).json({ message: "Aucun événement trouvé pour ce vendeur" });
+      }
+
+      res.status(200).json(vendeurEvents);
+  } catch (error) {
+      res.status(500).json({ message: "Erreur lors de la récupération des événements", error });
+  }
+});
+
+
+
+
+
 
 let verification;
 // Route de création d'un courriel avec code de verification

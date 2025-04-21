@@ -24,7 +24,7 @@ class Acceuil extends Component {
 
   }}
 >
-  Se conntecter
+  Se connecter
 </Button>
 <Link href="Creation">Pas de compte? Créer un compte.</Link>
 

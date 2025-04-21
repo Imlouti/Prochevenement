@@ -10,6 +10,14 @@ class AjouterEvenement extends Component {
         if (event) {
             event.preventDefault();
             
+
+            const vendeurId = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).vendeurId : null; // Récupérer l'ID du vendeur
+       
+            if (!vendeurId) {
+                console.error("ID du vendeur manquant dans localStorage");
+                return;  // Arrêter l'exécution si l'ID du vendeur est manquant
+            }
+
             console.log('Form Submitted');  // Débogage
             // Collecting event data from the form
             const evenement = {
@@ -18,7 +26,8 @@ class AjouterEvenement extends Component {
                 prix: document.getElementById("prix").value,
                 date: document.getElementById("date").value,
                 location: document.getElementById("location").value,
-                billets: document.getElementById("billets").value
+                billets: document.getElementById("billets").value,
+                vendeurId:  JSON.parse(localStorage.getItem("user")).vendeurId  // Utilisation du vendeurId  // adding the vendor ID 
             };
 
             // Check if any fields are empty
@@ -57,27 +66,23 @@ class AjouterEvenement extends Component {
 
     render() { 
         return <div id="background">
-                               <IconButton href="Vendeur" sx={{color:"black", padding: 0}} size="large">
-<ArrowBackIosIcon/>
-</IconButton>
-                <h1>
-        Creation d’un événement
-        </h1>
-                <Grid2
+                    <IconButton href="Vendeur" sx={{color:"black", padding: 0}} size="large">Retour                  
+                        <ArrowBackIosIcon/>
+                    </IconButton>
+                    <h1>
+                        Creation d’un événement
+                    </h1>
+                    <Grid2
                           container
                           spacing={0}
                           direction="column"
                           alignItems="center"
-                          justifyContent="center"
-                        >
-                            <AddEvent/>
-                        </Grid2>
-        
-        
-                <a id="hidden">Vous devez remplir tous les champs.</a>
+                          justifyContent="center">
+                        <AddEvent/>
+                    </Grid2>        
+                    <a id="hidden">Vous devez remplir tous les champs.</a>
 
-
-</div>
+                </div>
   }
 }
  

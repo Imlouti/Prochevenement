@@ -9,7 +9,7 @@ import { useTheme } from '@mui/material/styles';
 
 export default function LoginComp() {
   
-  //c'est fonctions transforme le mot de passe de texte lisable en **** et vise vera
+  //ces fonctions transforment le mot de passe de texte lisable en **** et vise vera
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -113,7 +113,8 @@ export default function LoginComp() {
                     // Enregistrez les informations de l'utilisateur dans le localStorage
                     localStorage.setItem('user', JSON.stringify({
                         nom: data.nom, // renvoyer le nom depuis le backend
-                        role: data.role // Renvoie le rôle de l'utilisateur (vendeur ou utilisateur)
+                        role: data.role, // Renvoie le rôle de l'utilisateur (vendeur ou utilisateur)
+                        vendeurId: data.vendeurId  // Store vendor's ID
                     }));
 
                     // Rediriger vers la page appropriée

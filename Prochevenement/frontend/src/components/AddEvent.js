@@ -107,9 +107,10 @@ label="billets"
                 prix: document.getElementById("prix").value,
                 date: value.toString(),
                 location: document.getElementById("addresse").value,
-                billets: document.getElementById("billets").value
+                billets: document.getElementById("billets").value,
+                vendeurId: JSON.parse(localStorage.getItem("user"))?.vendeurId // Ajouter l'ID du vendeur
             };
-
+            console.log("Objet événement à envoyer:", evenement);  // Vérifiez ce qui est envoyé
             // Check if any fields are empty
             const isAtLeastOneNull = Object.values(evenement).some(i => i === "");
             if (isAtLeastOneNull) {
