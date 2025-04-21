@@ -60,7 +60,7 @@ if(rows.length==0){
   rows.push(createData("Pas d'evenements", "", 0, 0));
 }
 
-export const EventTable = () => {
+export const VendorTable = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -123,7 +123,7 @@ export const EventTable = () => {
                             
                             column.format && typeof value === 'number'
                                 ? column.format(value)
-                                : <a href={`/Evenement?@${value}`} style={{fontSize: 14, textAlign: "left"}}> {value}</a>}
+                                : <a href={`/ModifierEvenement?@${value}`} style={{fontSize: 14, textAlign: "left"}}> {value}</a>}
                             </TableCell>
                         );
                       }

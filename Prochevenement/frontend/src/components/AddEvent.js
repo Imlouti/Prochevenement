@@ -1,9 +1,7 @@
 import React from "react";
-import { FormControlLabel, Checkbox, Paper, Grid2, Button, OutlinedInput, InputLabel, InputAdornment, IconButton, FormControl } from '@mui/material';
+import { Paper, Grid2, Button, OutlinedInput, InputLabel, FormControl } from '@mui/material';
 import dayjs from 'dayjs';
 
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import { useTheme } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -13,7 +11,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 export default function AddEvent() {
 
-  const [value, setValue] = React.useState(dayjs('2022-04-17'));
+  const [value, setValue] = React.useState(dayjs('2025-04-21'));
 
     const theme = useTheme();
       //le formulaire de creation dun evenement a le nom, courriel, postal, le mot de passe, mot de passe encore et une case à cocher
