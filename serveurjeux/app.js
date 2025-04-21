@@ -219,6 +219,26 @@ app.post('/auth/reinitialize', async (req, res) => {
 
 });
 
+app.post('/auth/search', async (req, res) => {
+  const { courriel } = req.body;
+
+  // Recherche de l'utilisateur dans la base de données
+  const event = await joueurs.findOne({ courriel: courriel });
+
+  if (!event) { //s'il n'existe pas le message d'erreur va s'afficher au frontend (voire Connexion.js pour plus de details)
+      return res.status(400).json({ message: 'Utilisateur non trouvé' });
+  }
+
+  // Vérification du mot de passe, sinon le message d'erreur va s'afficher au frontend (voire Connexion.js pour plus de details)
+  res.status(200).json({
+      message: "Connexion réussie",
+      nom: event.nom,  // Renvoie le nom de l'utilisateur
+      postal: event.postal,  // Renvoie le rôle (Vendeur ou Utilisateur)
+
+  });
+});
+
+
 //Route pour modifier
 app.post('/auth/modify', async (req, res) => {
   
@@ -240,6 +260,21 @@ app.post('/auth/modify', async (req, res) => {
 
 });
 
+app.post('/auth/delete', async (req, res) => {
+  const { courriel } = req.body;
+  // Recherche de l'utilisateur dans la base de données
+  const existingEvent = await joueurs.findOne({ courriel: courriel });
+    if (!existingEvent) {
+        return res.status(400).json({ message: "Ce compte n'existe pas" });
+    }
+  //le compte est supprimer
+
+  doc = await joueurs.deleteOne({courriel: courriel});
+  res.status(201).json({ message: "Compte modifier avec succès" });
+
+});
+
+
 //Route pour afficher tous les evenements
 app.get('/auth/eventTable', async (req, res) => {
     
@@ -250,6 +285,61 @@ app.get('/auth/eventTable', async (req, res) => {
     res.send(events);
 
 });
+
+
+app.post('/auth/eventSearch', async (req, res) => {
+  const { nom } = req.body;
+
+  // Recherche de l'utilisateur dans la base de données
+  const event = await evenements.findOne({ nom: nom });
+
+  if (!event) { //s'il n'existe pas le message d'erreur va s'afficher au frontend (voire Connexion.js pour plus de details)
+      return res.status(400).json({ message: 'Utilisateur non trouvé' });
+  }
+
+  // Vérification du mot de passe, sinon le message d'erreur va s'afficher au frontend (voire Connexion.js pour plus de details)
+  res.status(200).json({
+      message: "Connexion réussie",
+      description: event.description,  // Renvoie le nom de l'utilisateur
+      prix: event.prix,  // Renvoie le rôle (Vendeur ou Utilisateur)
+      date: event.date,  // Envoi de la route de redirection
+      location: event.location,  // Envoi de la route de redirection
+      billets: event.billets  // Envoi de la route de redirection
+
+  });
+});
+
+app.post('/auth/eventModify', async (req, res) => {
+  const { nom, description, prix, date, location, billets } = req.body;
+  // Recherche de l'utilisateur dans la base de données
+  const existingEvent = await evenements.findOne({ nom: nom });
+    if (!existingEvent) {
+        return res.status(400).json({ message: "Ce compte n'existe pas" });
+    }
+  //le compte est mis à jour
+
+  const filter = { nom: nom };
+  const update = { description: description, prix: prix, date: date, location: location , billets: billets};
+  doc = await evenements.findOneAndUpdate(filter, update);
+  res.status(201).json({ message: "Compte modifier avec succès" });
+
+});
+
+app.post('/auth/eventDelete', async (req, res) => {
+  const { nom } = req.body;
+  // Recherche de l'utilisateur dans la base de données
+  const existingEvent = await evenements.findOne({ nom: nom });
+    if (!existingEvent) {
+        return res.status(400).json({ message: "Ce compte n'existe pas" });
+    }
+  //le compte est supprimer
+
+  doc = await evenements.deleteOne({nom: nom});
+  res.status(201).json({ message: "Compte modifier avec succès" });
+
+});
+
+
 
 
 
