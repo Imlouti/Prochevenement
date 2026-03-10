@@ -1,48 +1,43 @@
 import React, { Component } from 'react';
-import { EventTable } from "../components/EventTable";
+import './styles.css';
+import { EventTable } from '../components/EventTable';
 import { Navigator } from '../components/Navigator';
-import {  Box } from "@mui/material";
+import { Box, Typography } from '@mui/material';
 
-
-let nomUtilisateur;
-
-if (localStorage.getItem("nom")!=undefined){
-
-
-  nomUtilisateur = localStorage.getItem("nom");
-  nomUtilisateur=nomUtilisateur.split(",");
-  nomUtilisateur=nomUtilisateur[0].split(" ");
-  nomUtilisateur=nomUtilisateur[0];
-  }
-  else{
-          nomUtilisateur="";
-  }
-  if(nomUtilisateur==undefined){
-        nomUtilisateur="";
-  }//import './App.css';
-class Magasiner extends Component {
-    
-    render(){
-    return( <div id="background">
-        <Box sx={{display: 'flex', gap: 2}}> 
-        <section id="user">
-              <p id="user">Bonjour, {nomUtilisateur} </p>
-      </section>
-      <section id="bar">
-<Navigator/>      </section></Box>
-<Box>
-<EventTable/>
-</Box>
-
-
-
-
-
-
-
-</div>
-)
+function getNomUtilisateur() {
+    const stored = localStorage.getItem('nom');
+    if (!stored) return '';
+    try {
+        const parsed = JSON.parse(stored);
+        return parsed.nom ? parsed.nom.split(' ')[0] : stored.split(',')[0].split(' ')[0];
+    } catch {
+        return stored.split(',')[0].split(' ')[0];
+    }
 }
+
+class Magasiner extends Component {
+    render() {
+        const nomUtilisateur = getNomUtilisateur();
+        return (
+            <div className="page-root">
+                <Navigator userName={nomUtilisateur} />
+                <div className="content-container">
+                    <Typography className="page-title" component="h1">
+                        Événements
+                    </Typography>
+                    <Typography sx={{
+                        fontFamily: "'DM Sans', sans-serif",
+                        color: '#9A9A9A',
+                        mb: 4,
+                        fontSize: '1rem',
+                    }}>
+                        Parcourez les événements disponibles près de chez vous.
+                    </Typography>
+                    <EventTable />
+                </div>
+            </div>
+        );
+    }
 }
 
 export default Magasiner;

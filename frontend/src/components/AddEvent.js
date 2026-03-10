@@ -119,7 +119,7 @@ label="billets"
 
             // Sending the user data to the backend to create the account
             try {
-                const response = await fetch('http://localhost:4001/auth/event', {
+                const response = await fetch('http://localhost:5000/auth/event', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

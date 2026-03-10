@@ -1,275 +1,305 @@
-.leaflet-container {
-  height: 100vh;
-  width: 100wh;
-}
-/*ajoute background to tous les divs background, #button*/
-#background{
-  position:fixed;
-  width:100%;
-  height:100%;
-
-}
-
-h1{
-  font-weight:700;
-  font-size:67px;
-  text-align: center;
-  margin-bottom:30px;  
-  margin-top:30px;
-}
-
-h2{
-  font-weight:500;
-  font-size:32px;
-  text-align: center;
-  width: 100%;
-  display: block;
-  margin-bottom:30px;  
-  margin-top:30px;
-}
-
-h3, a:not(#img):not(#hidden, #hidden2){
-  font-weight:500;
-  font-size:20px;
-  text-align: center;
-  width: 100%;
-  display: block;
-  margin-bottom:30px;  
-  margin-top:30px;
-  padding-left:10px;
-  padding-right:10px;
-
-}
-
-
-#hidden, #hidden2 {
-  font-weight:500;
-  font-size:20px;
-  color:brown;
-  text-align: center;
-  width: 100%;
-  margin-bottom:30px;  
-  margin-top:30px;
-  display: none;
-}
-
-#img{
-  font-weight:500;
-  font-size:20px;
-  width:36px;
-  margin-top:0px;
-  margin-bottom:0px;
-  display: inline;
-  margin-left:auto;
-  text-align: center;
-
-}
-
-#user{
-  text-align: center;
-  font-weight:500;
-  font-size:20px;
-  width:36px;
-  margin-top:0px;
-  margin-bottom:0px;
-  margin-left:auto;
-  display: block;
-  margin-top:18px;
-  margin-bottom:18px;
-  margin-left:12px;
-
-}
-
-#bar{
-  text-align: center;
-  width: 100%;
-  display: block;
-  margin-top:18px;
-  margin-bottom:18px;
-  margin-left:12px;
-
-}
-
-#middle{
-  text-align: center;
-  width: 100%;
-  display: block;
-  margin-top:18px;
-  margin-bottom:18px;
-  margin-left:12px;
-  margin-right:12px;
-
-}
-
-#map{
-  width:50%;
-  text-align: center;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top:18px;
-  margin-bottom:18px;
-  padding-left: 120px;
-  padding-right: 120px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-
-
-}
-
-section:not(#back)  {
-  text-align: right;
-  width: 100%;
-  display: block;
-  margin-top:18px;
-  margin-bottom:18px;
-  margin-right:12px;
-
-}
-
-#back  {
-  text-align: left;
-  width: 100%;
-  display: block;
-  margin-top:18px;
-  margin-bottom:18px;
-  margin-left:12px;
-
-}
-
-#two {
+/* ─── Page wrapper ───────────────────────────────────────── */
+.page-root {
+  min-height: 100vh;
+  background-color: #141414;
   display: flex;
-  justify-content: space-between;
-  margin-top:0px;
-  margin-bottom:0px;
-
+  flex-direction: column;
 }
 
-
-.button, .input{
-  font-weight : 700 ;
-  font-size:32px;
-  color: black;
-  border-radius:4px;
-  border: 2px solid black;
-  background-color: #f0f0f0;
-  text-align: center;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top:18px;
-  margin-bottom:18px;
-  padding-left: 120px;
-  padding-right: 120px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-
-
+/* ─── Auth pages (Connexion, Creation, Oublier…) ─────────── */
+.auth-root {
+  min-height: 100vh;
+  background-color: #1A1A1A;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  position: relative;
+  overflow: hidden;
 }
-.button{
-  width: 670px;
-}
-#switch{
-text-align: center;
-display: block;
-margin-left: auto;
-margin-right: auto;
-margin-top:18px;
 
-
-
+/* Decorative background stripe */
+.auth-root::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40%;
+  height: 100%;
+  background: #E85D3A;
+  opacity: 0.06;
+  clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%);
 }
-#slider{
-display: inline-block;
-}
-section{
-  float: right;
+
+.auth-card {
   width: 100%;
-  }
-
-img{
-  width:40px;
-  padding: 10px;
+  max-width: 560px;
+  padding: 48px 48px;
+  background: #FAF7F2;
+  border: 2px solid #1A1A1A;
+  box-shadow: 8px 8px 0px #E85D3A;
+  position: relative;
+  z-index: 1;
 }
 
-
-/* The container */
-.container {
-display: block;
-margin-left: auto;
-margin-right: auto;
-text-align: center;
-position: relative;
-padding-left: 35px;
-margin-bottom: 12px;
-cursor: pointer;
--webkit-user-select: none;
--moz-user-select: none;
--ms-user-select: none;
-user-select: none;
-font-weight : 500 ;
-  font-size:32px;
-  color: black;
+.auth-back-btn {
+  position: absolute !important;
+  top: 24px;
+  left: 24px;
+  color: #FAF7F2 !important;
+  z-index: 2;
 }
 
-/* Hide the browser's default checkbox */
-.container input {
-position: absolute;
-opacity: 0;
-cursor: pointer;
-height: 0;
-width: 0;
+.auth-title {
+  font-family: 'Playfair Display', serif !important;
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  color: #1A1A1A;
+  margin-bottom: 8px !important;
+  text-align: center;
 }
 
-/* Create a custom checkbox */
-.checkmark {
-display: inline-block;
-margin-left: 30px;
-margin-right: auto;
-text-align: center;
-top: 0;
-left: 0;
-height: 25px;
-width: 25px;
-background-color: #eee;
+.auth-subtitle {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: #6B6B6B;
+  text-align: center;
+  margin-bottom: 32px;
 }
 
-/* On mouse-over, add a grey background color */
-.container:hover input ~ .checkmark {
-background-color: #ccc;
+.auth-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #E85D3A;
+  text-align: center;
+  margin-bottom: 32px;
+  letter-spacing: -0.02em;
 }
 
-/* When the checkbox is checked, add a blue background */
-.container input:checked ~ .checkmark {
-background-color: #2196F3;
+/* Error messages */
+.error-msg {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  color: #C0392B;
+  background: #FDE8E6;
+  border: 1px solid #E85D3A;
+  padding: 10px 16px;
+  margin-top: 12px;
+  display: none;
+  text-align: center;
 }
 
-/* Create the checkmark/indicator (hidden when not checked) */
-.checkmark:after {
-content: "";
-display: none;
-margin-top:5px;
-margin-left: auto;
-margin-right: auto;
-text-align: center;
-
+/* ─── Landing page (Acceuil) ─────────────────────────────── */
+.landing-root {
+  min-height: 100vh;
+  background-color: #1A1A1A;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Show the checkmark when checked */
-.container input:checked ~ .checkmark:after {
-display: block;
+.landing-accent {
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: #E85D3A;
+  opacity: 0.12;
+  pointer-events: none;
 }
 
-/* Style the checkmark/indicator */
-.container .checkmark:after {
-left: 9px;
-top: 5px;
-width: 5px;
-height: 10px;
-border: solid white;
-border-width: 0 3px 3px 0;
--webkit-transform: rotate(45deg);
--ms-transform: rotate(45deg);
-transform: rotate(45deg);
-
+.landing-accent-2 {
+  position: absolute;
+  bottom: -80px;
+  left: -80px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: #C9A84C;
+  opacity: 0.08;
+  pointer-events: none;
 }
+
+.landing-header {
+  padding: 24px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.landing-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #FAF7F2;
+  letter-spacing: -0.02em;
+}
+
+.landing-logo span {
+  color: #E85D3A;
+}
+
+.landing-hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.landing-eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #E85D3A;
+  margin-bottom: 20px;
+}
+
+.landing-h1 {
+  font-family: 'Playfair Display', serif !important;
+  font-size: clamp(3rem, 7vw, 6rem) !important;
+  font-weight: 900 !important;
+  color: #FAF7F2 !important;
+  line-height: 1.05 !important;
+  margin-bottom: 24px !important;
+}
+
+.landing-h1 em {
+  font-style: italic;
+  color: #E85D3A;
+}
+
+.landing-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.1rem;
+  color: #9A9A9A;
+  max-width: 480px;
+  margin-bottom: 48px;
+  line-height: 1.65;
+}
+
+.landing-map-img {
+  width: min(400px, 80%);
+  opacity: 0.18;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+/* ─── Interior page header bar ───────────────────────────── */
+.page-topbar {
+  background-color: #1A1A1A;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+  border-bottom: 2px solid #E85D3A;
+}
+
+.topbar-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #FAF7F2;
+  flex: 1;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.topbar-logo span { color: #E85D3A; }
+
+.topbar-username {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  color: #C9A84C;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+/* ─── Content container ──────────────────────────────────── */
+.content-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  width: 100%;
+}
+
+.page-title {
+  font-family: 'Playfair Display', serif !important;
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
+  color: #FAF7F2 !important;
+  margin-bottom: 32px !important;
+  position: relative;
+  display: inline-block;
+}
+
+.page-title::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 48px;
+  height: 4px;
+  background: #E85D3A;
+}
+
+/* ─── Vendor page ────────────────────────────────────────── */
+.vendor-topbar {
+  background-color: #1A1A1A;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+  border-bottom: 2px solid #E85D3A;
+}
+
+/* ─── About page ─────────────────────────────────────────── */
+.about-card {
+  background: #1A1A1A;
+  color: #FAF7F2;
+  padding: 48px;
+  border: 2px solid #1A1A1A;
+  box-shadow: 8px 8px 0px #E85D3A;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* ─── Settings page ──────────────────────────────────────── */
+.settings-btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  margin-top: 32px;
+}
+
+/* ─── Acheter / payment form ─────────────────────────────── */
+.payment-input {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 1rem !important;
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto 16px;
+  padding: 12px 16px;
+  border: 2px solid #1A1A1A;
+  background: #FFFFFF;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.payment-input:focus { border-color: #E85D3A; }

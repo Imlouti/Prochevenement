@@ -1,13 +1,14 @@
-import logo from './logo.svg';
-import { Routes, Route } from 'react-router-dom'
-import './App.css';
+import { Routes, Route } from 'react-router-dom';
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import theme from './theme';
 
-import Acceuil from './pages/Acceuil'
-import Connexion from './pages/Connexion'
+import Acceuil from './pages/Acceuil';
+import Connexion from './pages/Connexion';
 import Creation from './pages/Creation';
 import Oublier from './pages/Oublier';
 import Reinitialiser from './pages/Reinitialiser';
 import Magasiner from './pages/Magasiner';
+import Dashboard from './pages/Dashboard';
 import Modifier from './pages/Modifier';
 import Evenement from './pages/Evenement';
 import Parametres from './pages/Parametres';
@@ -21,33 +22,31 @@ import ModifierEvenement from './pages/ModifierEvenement';
 import AjouterEvenement from './pages/AjouterEvenement';
 import React from 'react';
 
-
 function App() {
   return (
-      <>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Routes>
-        
-        <Route path="/" element={<Acceuil/>} />
-        <Route path="/Magasiner" element={<Magasiner/>}/>
-
-        <Route path="/Connexion" element={<Connexion/>}/>
-        <Route path="/Creation" element={<Creation/>}/>
-        <Route path="/Oublier" element={<Oublier/>}/>
-        <Route path="/Reinitialiser" element={<Reinitialiser/>}/>
-        
-        <Route path="/Modifier" element={<Modifier/>}/>
-        <Route path="/Evenement" element={<Evenement/>}/>
-        <Route path="/Parametres" element={<Parametres/>}/>
-        <Route path="/Calendrier" element={<Calendrier/>}/>
-        <Route path="/Annuler" element={<Annuler/>}/>
-        <Route path="/Panier" element={<Panier/>}/>
-        <Route path="/Acheter" element={<Acheter/>}/>
-        <Route path="/Propos" element={<Propos/>}/>
-        <Route path="/Vendeur" element={<Vendeur/>}/>
-        <Route path="/ModifierEvenement" element={<ModifierEvenement/>}/>
-        <Route path="/AjouterEvenement" element={<AjouterEvenement/>}/>
+        <Route path="/" element={<Acceuil />} />
+        <Route path="/Magasiner" element={<Magasiner />} />
+        <Route path="/Dashboard" element={<Dashboard />} />
+        <Route path="/Connexion" element={<Connexion />} />
+        <Route path="/Creation" element={<Creation />} />
+        <Route path="/Oublier" element={<Oublier />} />
+        <Route path="/Reinitialiser" element={<Reinitialiser />} />
+        <Route path="/Modifier" element={<Modifier />} />
+        <Route path="/Evenement" element={<Evenement />} />
+        <Route path="/Parametres" element={<Parametres />} />
+        <Route path="/Calendrier" element={<Calendrier />} />
+        <Route path="/Annuler" element={<Annuler />} />
+        <Route path="/Panier" element={<Panier />} />
+        <Route path="/Acheter" element={<Acheter />} />
+        <Route path="/Propos" element={<Propos />} />
+        <Route path="/Vendeur" element={<Vendeur />} />
+        <Route path="/ModifierEvenement" element={<ModifierEvenement />} />
+        <Route path="/AjouterEvenement" element={<AjouterEvenement />} />
       </Routes>
-      </>
+    </ThemeProvider>
   );
 }
 

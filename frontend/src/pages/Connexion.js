@@ -1,55 +1,39 @@
-
 import React, { Component } from 'react';
-import { IconButton } from "@mui/material";
+import './styles.css';
+import { Box, Link, Typography, IconButton } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { Box, Link, Grid2 } from "@mui/material";
 import LoginComp from '../components/LoginComp';
 
-
-
 class Connexion extends Component {
-   
-        //Va afficher une fleche de retour a la page d'acceuil, le titre de la page, le formulaire de connexion (voire le fichier components/LoginComp pour plus d'explication) et deux liens pour creer un compte et pour le mot de passe oublier
-    render() { 
+    render() {
+        return (
+            <div className="auth-root">
+                <IconButton href="/" className="auth-back-btn" size="large">
+                    <ArrowBackIosIcon />
+                </IconButton>
 
-                return <div id="background">
+                <div className="auth-card">
+                    <div className="auth-logo">Proché<span style={{color:'#6B6B6B'}}>vénements</span></div>
+                    <h2 className="auth-title">Connexion</h2>
+                    <p className="auth-subtitle">Bienvenue ! Connectez-vous pour accéder à votre compte.</p>
 
+                    <LoginComp />
 
-                <IconButton href="/" sx={{color:"black", padding: 0}} size="large">
-<ArrowBackIosIcon/>
-</IconButton>
-        <h1>
-        Connexion
-        </h1>
-        <Grid2
-  container
-  spacing={0}
-  direction="column"
-  alignItems="center"
-  justifyContent="center"
->
-    <LoginComp/>
-</Grid2>
+                    <a id="hidden" className="error-msg">Ce compte n'existe pas.</a>
+                    <a id="hidden2" className="error-msg">Vous devez remplir tous les champs.</a>
 
-                <a id="hidden">Ce compte n'existe pas.</a>
-                <a id="hidden2">Vous devez remplir tous les champs.</a>
-
-
-    
-<Box sx={{display: 'flex', gap: 2}}>
-<Link href="Creation">Pas de compte? Créer un compte.</Link>
-<Link href="Oublier" id='oublier'>Oublier le mot de passe</Link>
-
-</Box>
-
-
-</div>
-
-    
-
-  }
-
+                    <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+                        <Link href="/Creation" sx={{ fontSize: '0.88rem' }}>
+                            Pas de compte ? Créer un compte.
+                        </Link>
+                        <Link href="/Oublier" sx={{ fontSize: '0.88rem', color: '#6B6B6B', '&:hover': { color: '#1A1A1A' } }}>
+                            Mot de passe oublié
+                        </Link>
+                    </Box>
+                </div>
+            </div>
+        );
+    }
 }
 
- 
 export default Connexion;

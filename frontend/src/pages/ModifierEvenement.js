@@ -1,48 +1,29 @@
 import React, { Component } from 'react';
-import { IconButton } from "@mui/material";
+import './styles.css';
+import { IconButton } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import {  Box, Button, Link, Grid2 } from "@mui/material";
 import ModifyEvent from '../components/ModifyEvent';
 
+class ModifierEvenement extends Component {
+    render() {
+        return (
+            <div className="auth-root">
+                <IconButton href="/Vendeur" className="auth-back-btn" size="large">
+                    <ArrowBackIosIcon />
+                </IconButton>
 
+                <div className="auth-card" style={{ maxWidth: 620 }}>
+                    <div className="auth-logo">Proché<span style={{color:'#6B6B6B'}}>vénements</span></div>
+                    <h2 className="auth-title">Modifier l'événement</h2>
+                    <p className="auth-subtitle">Modifiez ou supprimez cet événement.</p>
 
-class Evenement extends Component {
-    //Va afficher une fleche de retour a la page parametres, le titre de la page, le formulaire de modification de compte (voire le fichier components/ModifyComp pour plus d'explication) et un lien pour reinitialiser le mot de passe
-    render() { 
-        
-        return              <div id="background">
-        <p id="two">
+                    <ModifyEvent />
 
-        <IconButton href="Vendeur" sx={{color:"black", padding: 0}} size="large">
-<ArrowBackIosIcon/>
-</IconButton>
-</p>
-
-      
-  
-  <Grid2
-                    container
-                    spacing={0}
-                    direction="column"
-                    alignItems="center"
-                    justifyContent="center"
-                  >
-                      <ModifyEvent/>
-                  </Grid2>
-
-
-
-
-      <a id="hidden">Pas de billets restant.</a>
-
-
-
-
-
-
-</div>
-    
+                    <a id="hidden" className="error-msg">Vous devez remplir tous les champs.</a>
+                </div>
+            </div>
+        );
+    }
 }
-}
- 
-export default Evenement;
+
+export default ModifierEvenement;

@@ -1,38 +1,29 @@
 import React, { Component } from 'react';
-import { IconButton } from "@mui/material";
+import './styles.css';
+import { IconButton } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { Grid2 } from "@mui/material";
 import ForgotComp from '../components/ForgotComp';
 
 class Oublier extends Component {
-    //Va afficher une fleche de retour a la page de connexion, le titre de la page, le formulaire qui demande pour le courriel (voire le fichier components/ForgotComp pour plus d'explication) 
-    render() { 
-        return <div id="background">
-                <IconButton href="Connexion" sx={{color:"black", padding: 0}} size="large">
-<ArrowBackIosIcon/>
-</IconButton>
-                <h1>
-        Oublier le mot de passe
-        </h1>
-        <Grid2
-          container
-          spacing={0}
-          direction="column"
-          alignItems="center"
-          justifyContent="center"
-        >
-            <ForgotComp/>
-        </Grid2>
+    render() {
+        return (
+            <div className="auth-root">
+                <IconButton href="/Connexion" className="auth-back-btn" size="large">
+                    <ArrowBackIosIcon />
+                </IconButton>
 
-        <a id="hidden">Vous devez remplir tous les champs.</a>
+                <div className="auth-card">
+                    <div className="auth-logo">Proché<span style={{color:'#6B6B6B'}}>vénements</span></div>
+                    <h2 className="auth-title">Mot de passe oublié</h2>
+                    <p className="auth-subtitle">Entrez votre courriel et nous vous enverrons un code de vérification.</p>
 
+                    <ForgotComp />
 
-
-
-</div>
-  }
+                    <a id="hidden" className="error-msg">Vous devez remplir tous les champs.</a>
+                </div>
+            </div>
+        );
+    }
 }
- 
+
 export default Oublier;
-
-

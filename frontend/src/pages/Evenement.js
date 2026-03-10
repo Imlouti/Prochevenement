@@ -1,100 +1,127 @@
-
-
 import React, { Component } from 'react';
-import { IconButton } from "@mui/material";
+import './styles.css';
+import { IconButton, Button, Typography, Box, Chip } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import {  Box, Button, Link, Grid2 } from "@mui/material";
-import ModifyComp from '../components/ModifyComp';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
 var idx = document.URL.indexOf('@');
-var list = document.URL.split("");
+var list = document.URL.split('');
 var params = new Array();
-  for (var i=idx+1; i<list.length; i++) {
-    params.push(list[i]);
-     }
-  
-  params=params.join("");
+for (var i = idx + 1; i < list.length; i++) { params.push(list[i]); }
+params = params.join('');
 
-  var eventInfo=[];
-  eventInfo.push(params);
+var eventInfo = [];
+eventInfo.push(params);
 
-  const event = {
-    nom: params
-};
+const event = { nom: params };
 
-
-
- // Envoi des données de connexion au backend (voire app.js route de connexion pour plus de detail) pour vérifier les identifiants
- try {
-    const response = await fetch('http://localhost:4001/auth/eventSearch', {
+try {
+    const response = await fetch('http://localhost:5000/auth/eventSearch', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(event)
     });
-
     const data = await response.json();
-    console.log(data);
-
     if (response.ok) {
-        // Si la connexion est réussie, 
-        // Enregistrez les informations de l'utilisateur dans le localStorage
         eventInfo.push(data.description);
         eventInfo.push(data.prix);
         eventInfo.push(data.date);
         eventInfo.push(data.location);
         eventInfo.push(data.billets);
-    } 
-} catch (error) { //pour toute autre erreurs
-    console.error('There was an error logging in:', error);
+    }
+} catch (error) {
+    console.error('There was an error loading the event:', error);
 }
 
 class Evenement extends Component {
-    //Va afficher une fleche de retour a la page parametres, le titre de la page, le formulaire de modification de compte (voire le fichier components/ModifyComp pour plus d'explication) et un lien pour reinitialiser le mot de passe
-    render() { 
-        
-        return              <div id="background">
-        <p id="two">
+    render() {
+        return (
+            <div className="auth-root" style={{ justifyContent: 'flex-start', paddingTop: 80 }}>
+                <IconButton href="/Magasiner" className="auth-back-btn" size="large">
+                    <ArrowBackIosIcon />
+                </IconButton>
 
-        <IconButton href="Magasiner" sx={{color:"black", padding: 0}} size="large">
-<ArrowBackIosIcon/>
-</IconButton>
-</p>
+                <Box sx={{
+                    width: '100%',
+                    maxWidth: 640,
+                    border: '2px solid #1A1A1A',
+                    boxShadow: '8px 8px 0px #E85D3A',
+                    backgroundColor: '#FAF7F2',
+                    overflow: 'hidden',
+                    position: 'relative',
+                    zIndex: 1,
+                }}>
+                    {/* Header band */}
+                    <Box sx={{ backgroundColor: '#1A1A1A', px: 4, py: 3 }}>
+                        <Typography sx={{
+                            fontFamily: "'Playfair Display', serif",
+                            fontSize: '1.8rem',
+                            fontWeight: 700,
+                            color: '#FAF7F2',
+                        }}>
+                            {eventInfo[0]}
+                        </Typography>
+                    </Box>
 
-      
-      <h1>
-{eventInfo[0]}
-  </h1>
-  <h2>{eventInfo[1]}</h2>
-  <h3>Prix: ${eventInfo[2]}</h3>
-  <h3>Date: {eventInfo[3]}</h3>
-  <h3>Location: {eventInfo[4]}</h3>
-  <h3>Billets: {eventInfo[5]}</h3>
-  <Box textAlign='center'>
-        <Button variant='contained' size='large'
-  onClick={() => {
-    document.location.href="Magasiner";
+                    <Box sx={{ p: 4 }}>
+                        {/* Description */}
+                        <Typography sx={{
+                            fontFamily: "'DM Sans', sans-serif",
+                            fontSize: '1rem',
+                            color: '#6B6B6B',
+                            mb: 4,
+                            lineHeight: 1.7,
+                        }}>
+                            {eventInfo[1]}
+                        </Typography>
 
-  }}
->
-  Acheter
-</Button>
-</Box>
+                        {/* Details grid */}
+                        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, mb: 4 }}>
+                            {[
+                                { icon: <AttachMoneyIcon />, label: 'Prix', value: `$${eventInfo[2]}` },
+                                { icon: <CalendarTodayIcon />, label: 'Date', value: eventInfo[3] },
+                                { icon: <LocationOnIcon />, label: 'Location', value: eventInfo[4] },
+                                { icon: <ConfirmationNumberIcon />, label: 'Billets restants', value: eventInfo[5] },
+                            ].map(({ icon, label, value }) => (
+                                <Box key={label} sx={{
+                                    border: '1px solid #E0DDD8',
+                                    p: 2,
+                                    display: 'flex',
+                                    alignItems: 'flex-start',
+                                    gap: 1.5,
+                                }}>
+                                    <Box sx={{ color: '#E85D3A', mt: 0.25 }}>{icon}</Box>
+                                    <Box>
+                                        <Typography sx={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#9A9A9A', fontWeight: 600 }}>
+                                            {label}
+                                        </Typography>
+                                        <Typography sx={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600, color: '#1A1A1A' }}>
+                                            {value}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                            ))}
+                        </Box>
 
+                        <Button
+                            variant="contained"
+                            size="large"
+                            fullWidth
+                            startIcon={<ConfirmationNumberIcon />}
+                            onClick={() => { document.location.href = '/Magasiner'; }}
+                        >
+                            Acheter des billets
+                        </Button>
 
-
-
-      <a id="hidden">Pas de billets restant.</a>
-
-
-
-
-
-
-</div>
-    
+                        <a id="hidden" className="error-msg">Pas de billets restants.</a>
+                    </Box>
+                </Box>
+            </div>
+        );
+    }
 }
-}
- 
+
 export default Evenement;

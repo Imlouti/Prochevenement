@@ -1,94 +1,59 @@
 import * as React from 'react';
-import { Paper, Grid2, Button, OutlinedInput, InputLabel, FormControl } from '@mui/material';
-
-import { useTheme } from '@mui/material/styles';
+import { Grid2, Button, OutlinedInput, InputLabel, FormControl } from '@mui/material';
 
 export default function ForgotComp() {
-  
-
-  const theme = useTheme();
-    //ce formulaire demande pour le courriel
   return (
-    <Paper sx={{ textAlign: "center" }}>
-
-      <Grid2
-        container
-        spacing={0}
-        direction="column"
-        sx={{backgroundColor: "transparent"}}
-      >
-
-        <FormControl sx={{ m: 1, width: '500px', alignSelf: 'center', backgroundColor: "transparent" }} variant="outlined">
-
+    <Grid2
+      container
+      spacing={0}
+      direction="column"
+      sx={{ width: '100%' }}
+    >
+      <FormControl sx={{ mb: 2, width: '100%' }} variant="outlined">
         <InputLabel htmlFor="email">Courriel</InputLabel>
-        <OutlinedInput
-          id="email"
-          label="Email"
-        />
+        <OutlinedInput id="email" label="Courriel" />
+      </FormControl>
 
-        </FormControl>
+      <Button
+        variant="contained"
+        fullWidth
+        size="large"
+        sx={{ mt: 1 }}
+        onClick={async () => {
+          document.getElementById('hidden').style.display = 'none';
 
+          const courriel = {
+            courriel: document.getElementById('email').value,
+          };
 
-          <Button 
-            label="Login" 
-            sx={{ 
-              m: 1,
-              alignSelf: 'center',
-              width:"25%" 
-            }}
-            variant="contained"
-            onClick={async() => {
-              document.getElementById("hidden").style.display = "none";
-              
+          const isAtLeastOneNull = Object.values(courriel).some(i => i === '');
+          if (isAtLeastOneNull) {
+            document.getElementById('hidden').style.display = 'block';
+            return;
+          }
 
-              console.log('Form Submitted');  // Débogage
-            // Collecte de courriels à partir du formulaire
-            const courriel = {
-                courriel: document.getElementById("email").value
-            };
+          try {
+            const response = await fetch('http://localhost:5000/auth/forgot', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(courriel),
+            });
 
-        // Vérifiez si des champs sont vides
-            const isAtLeastOneNull = Object.values(courriel).some(i => i === "");
-            if (isAtLeastOneNull) {
-                document.getElementById("hidden").style.display = "block"; // Afficher l'erreur si les champs sont vides
+            const data = await response.json();
+            localStorage.setItem('courriel', document.getElementById('email').value);
 
-                return;
+            if (response.ok) {
+              document.location.href = 'Reinitialiser';
+            } else {
+              console.error('Error:', data);
             }
-
-
-          // Envoi du courriel au backend pour créer et envoyer le code de vérification
-            try {
-                const response = await fetch('http://localhost:4001/auth/forgot', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(courriel)// Conversion d'un objet courriel en chaîne JSON
-                });
-
-                const data = await response.json();
-                console.log(data);
-
-                localStorage.setItem('courriel', document.getElementById("email").value) // renvoyer le courriel a la page reinitialiser
-
-    
-
-                if (response.ok) {
-                // Redirection vers la page reinitialiser après la creation du code de verification réussi
-                    document.location.href = "Reinitialiser";
-                } else {
-                  // Gérer les erreurs du serveur
-                    console.error('Error:', data);
-                }
-            } catch (error) {
-                console.error('There was an error creating the account:', error);
-            }
-            }}>
-              Envoyer
-            </Button>
-
-      </Grid2>
-
-    </Paper>
+          } catch (error) {
+            console.error('There was an error:', error);
+          }
+        }}
+      >
+        Envoyer
+      </Button>
+    </Grid2>
   );
 }

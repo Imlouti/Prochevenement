@@ -28,7 +28,7 @@ function createData(id, event, location, price, tickets) {
 
 
 
-const response = await fetch('http://localhost:4001/auth/eventTable', {
+const response = await fetch('http://localhost:5000/auth/eventTable', {
   method: 'GET',
   headers: {
       'Content-Type': 'application/json'

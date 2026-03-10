@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 require("dotenv").config();
 
 //routes et quelle port
-const port = process.env.PORT || 4001;
+const port = process.env.PORT;
 const index = require("./routes/index.js");
 const app = express();
 app.use(index);
@@ -30,6 +30,8 @@ const server = http.createServer(app);
 
 app.use(bodyParser.json());
 
+/* TODO: Move these credentials to a .env file */
+
 const contactEmail = nodemailer.createTransport({
   service:'gmail',
   auth: {
@@ -48,7 +50,7 @@ contactEmail.verify((error)=>{
 })
 
 var joueurs; //collection joueurs
-mongoose.connect('mongodb://127.0.0.1:27017/Prochevenement');
+mongoose.connect(process.env.MONGO_URI);
   joueurs = mongoose.model('joueurs', new mongoose.Schema({
     _id: mongoose.Types.ObjectId,
     nom: String,
