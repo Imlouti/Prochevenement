@@ -1,152 +1,128 @@
-import React from "react";
-import { Paper, Grid2, Button, OutlinedInput, InputLabel, FormControl } from '@mui/material';
+import React, { useState } from 'react';
+import { Button, TextField, Typography, Box } from '@mui/material';
 import dayjs from 'dayjs';
-
-
-import { useTheme } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-
+import { AdapterDayjs }         from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker }           from '@mui/x-date-pickers/DatePicker';
+import { TimePicker }           from '@mui/x-date-pickers/TimePicker';
+import { authPost } from '../utils/api';
+import { LocationAutocomplete } from './LocationAutocomplete';
 
 export default function AddEvent() {
+    const [nom,         setNom]         = useState('');
+    const [description, setDescription] = useState('');
+    const [prix,        setPrix]        = useState('');
+    const [location,    setLocation]    = useState('');
+    const [billets,     setBillets]     = useState('');
+    const [lat,         setLat]         = useState(null);
+    const [lng,         setLng]         = useState(null);
+    const [startDate,   setStartDate]   = useState(dayjs());
+    const [endDate,     setEndDate]     = useState(dayjs());
+    const [startTime,   setStartTime]   = useState(dayjs().hour(18).minute(0));
+    const [endTime,     setEndTime]     = useState(dayjs().hour(21).minute(0));
+    const [error,       setError]       = useState('');
 
-  const [value, setValue] = React.useState(dayjs('2025-04-21'));
+    const handleSubmit = async () => {
+        setError('');
+        if (!nom || !description || !prix || !location.trim() || !billets || !startDate || !endDate || !startTime || !endTime) {
+            setError('Veuillez remplir tous les champs.');
+            return;
+        }
 
-    const theme = useTheme();
-      //le formulaire de creation dun evenement a le nom, courriel, postal, le mot de passe, mot de passe encore et une case à cocher
+        const evenement = {
+            nom,
+            description,
+            prix,
+            // Display string e.g. "12 avr. 2025"
+            date:        startDate.format('D MMM. YYYY'),
+            dateISO:     startDate.format('YYYY-MM-DD'),
+            endDateISO:  endDate.format('YYYY-MM-DD'),
+            startHour:   startTime.hour(),
+            startMinute: startTime.minute(),
+            endHour:     endTime.hour(),
+            endMinute:   endTime.minute(),
+            location,
+            billets,
+        };
+
+        try {
+            const res  = await authPost('/auth/event', evenement);
+            const data = await res.json();
+            if (res.ok) {
+                document.location.href = '/Vendeur';
+            } else {
+                setError(data.message || "Erreur lors de la création.");
+            }
+        } catch (err) {
+            setError('Erreur de connexion au serveur.');
+        }
+    };
+
+    const fieldSx = { mb: 2, width: '100%' };
+    const labelSx = {
+        fontFamily: "'DM Sans', sans-serif",
+        fontSize: '0.78rem', fontWeight: 600,
+        color: '#6B6B6B', mb: 0.5,
+        textTransform: 'uppercase', letterSpacing: '0.06em',
+    };
+
     return (
-        <Paper sx={{ textAlign: "center" }}>
+        <Box sx={{ width: '100%' }}>
+            <TextField label="Titre de l'événement" value={nom}
+                onChange={e => setNom(e.target.value)} fullWidth sx={fieldSx} />
 
-        <Grid2
-            container
-            spacing={0}
-            direction="column"
-            sx={{backgroundColor: "transparent"}}
-        >
+            <TextField label="Description" value={description}
+                onChange={e => setDescription(e.target.value)}
+                fullWidth multiline rows={3} sx={fieldSx} />
 
-            <FormControl sx={{ m: 1, width: '500px', alignSelf: 'center', backgroundColor: "transparent" }} variant="outlined">
+            <TextField label="Prix ($)" value={prix} type="number"
+                onChange={e => setPrix(e.target.value)} fullWidth sx={fieldSx} />
 
-            <InputLabel htmlFor="nomevenement">Titre</InputLabel>
-            <OutlinedInput
-            id="nomevenement"
-            label="nomevenement"
+            <LocationAutocomplete
+                label="Adresse / Lieu"
+                value={location}
+                onChange={val => { setLocation(val); setLat(null); setLng(null); }}
+                onSelect={({ address, lat: la, lng: lo }) => { setLocation(address); setLat(la); setLng(lo); }}
+                sx={fieldSx}
             />
 
-            </FormControl>
+            <TextField label="Nombre de billets" value={billets} type="number"
+                onChange={e => setBillets(e.target.value)} fullWidth sx={fieldSx} />
 
-            <FormControl sx={{ m: 1, width: '500px', alignSelf: 'center', backgroundColor: "transparent" }} variant="outlined">
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
+                {/* Start date + time */}
+                <Typography sx={labelSx}>Début</Typography>
+                <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                    <DatePicker label="Date de début" value={startDate}
+                        onChange={v => { setStartDate(v); if (v && v.isAfter(endDate)) setEndDate(v); }}
+                        sx={{ flex: 1 }} />
+                    <TimePicker label="Heure de début" value={startTime}
+                        onChange={v => setStartTime(v)} sx={{ flex: 1 }}
+                        ampm={false} />
+                </Box>
 
-                <InputLabel htmlFor="description">Description</InputLabel>
-                <OutlinedInput
-                id="description"
-                label="description"
-                />
+                {/* End date + time */}
+                <Typography sx={labelSx}>Fin</Typography>
+                <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                    <DatePicker label="Date de fin" value={endDate}
+                        minDate={startDate}
+                        onChange={v => setEndDate(v)}
+                        sx={{ flex: 1 }} />
+                    <TimePicker label="Heure de fin" value={endTime}
+                        onChange={v => setEndTime(v)} sx={{ flex: 1 }}
+                        ampm={false} />
+                </Box>
+            </LocalizationProvider>
 
-            </FormControl>
+            {error && (
+                <Typography sx={{ color: '#C0392B', fontFamily: "'DM Sans', sans-serif", fontSize: '0.85rem', mb: 2 }}>
+                    {error}
+                </Typography>
+            )}
 
-            <FormControl sx={{ m: 1, width: '500px', alignSelf: 'center', backgroundColor: "transparent" }} variant="outlined">
-
-<InputLabel htmlFor="prix">Prix</InputLabel>
-<OutlinedInput
-id="prix"
-label="prix"
-/>
-
-</FormControl>
-
-
-<FormControl sx={{ m: 1, width: '500px', alignSelf: 'center', backgroundColor: "transparent" }} variant="outlined">
-
-<LocalizationProvider dateAdapter={AdapterDayjs}>
-
-<DatePicker label="Date"           value={value}
-          onChange={(newValue) => setValue(newValue)} />
-</LocalizationProvider>
-</FormControl>
-
-<FormControl sx={{ m: 1, width: '500px', alignSelf: 'center', backgroundColor: "transparent" }} variant="outlined">
-
-<InputLabel htmlFor="addresse">Addresse</InputLabel>
-<OutlinedInput
-id="addresse"
-label="addresse"
-/>
-
-</FormControl>
-
-<FormControl sx={{ m: 1, width: '500px', alignSelf: 'center', backgroundColor: "transparent" }} variant="outlined">
-
-<InputLabel htmlFor="billets">Billets</InputLabel>
-<OutlinedInput
-id="billets"
-label="billets"
-/>
-
-</FormControl>
-
-
-
-            <Button 
-                label="Login" 
-                sx={{ 
-                m: 1,
-                alignSelf: 'center',
-                width:"25%" 
-                }}
-                variant="contained"
-                onClick={async() => {
-                                  //quand que le boutton est cliquer pour ce connecter les messages d'erreurs s'efface
-                    document.getElementById("hidden").style.display = "none";
-                    
-                    console.log('Form Submitted');  // Débogage
-            // Collecting event data from the form
-            const evenement = {
-                nom: document.getElementById("nomevenement").value,
-                description: document.getElementById("description").value,
-                prix: document.getElementById("prix").value,
-                date: value.toString(),
-                location: document.getElementById("addresse").value,
-                billets: document.getElementById("billets").value
-            };
-
-            // Check if any fields are empty
-            const isAtLeastOneNull = Object.values(evenement).some(i => i === "");
-            if (isAtLeastOneNull) {
-                document.getElementById("hidden").style.display = "block"; // Show error if fields are empty
-                return;
-            }
-
-            // Sending the user data to the backend to create the account
-            try {
-                const response = await fetch('http://localhost:5000/auth/event', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(evenement) // Converting user object to JSON string
-                });
-
-                const data = await response.json();
-                console.log(data);
-
-                if (response.ok) {
-                    // Redirect to vendor page after successful addition
-                    document.location.href = "Vendeur";
-                } else {
-                    // Handle errors from the server 
-                    console.error('Error:', data);
-                }
-            } catch (error) {
-                console.error('There was an error creating the account:', error);
-            }
-                }}>
-                Creation
-                </Button>
-
-        </Grid2>
-
-        </Paper>
+            <Button variant="contained" fullWidth size="large" onClick={handleSubmit}>
+                Créer l'événement
+            </Button>
+        </Box>
     );
-
 }

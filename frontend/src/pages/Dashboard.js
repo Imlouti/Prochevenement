@@ -1,43 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './styles.css';
-import { Navigator } from '../components/Navigator';
-import { Typography, Box, Button, Chip, Divider, Link } from '@mui/material';
+import { authGet } from '../utils/api';
+import dayjs from 'dayjs';
+import { Typography, Box, Button, Chip, Divider, Dialog, DialogTitle, DialogContent, DialogActions, IconButton } from '@mui/material';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import CloseIcon       from '@mui/icons-material/Close';
 
-function getNomUtilisateur() {
-    const stored = localStorage.getItem('nom');
-    if (!stored) return '';
-    try {
-        const parsed = JSON.parse(stored);
-        return parsed.nom ? parsed.nom.split(' ')[0] : stored.split(',')[0].split(' ')[0];
-    } catch {
-        return stored.split(',')[0].split(' ')[0];
-    }
-}
-
-// ── Placeholder data — replace with API calls later ──────────────────────────
-
-const ticketsAVenir = [
-    { nom: 'Concert Jazz au Parc', date: '12 avril 2025', location: 'Parc Lafontaine, Montréal', billets: 2 },
-    { nom: 'Marché Artisanal du Printemps', date: '19 avril 2025', location: 'Place des Arts, Montréal', billets: 1 },
-    { nom: 'Festival de Cinéma Indépendant', date: '3 mai 2025', location: 'Cinéma Beaubien, Montréal', billets: 2 },
-];
-
-const achatsRecents = [
-    { nom: 'Concert Jazz au Parc', date: 'Acheté le 2 mars 2025', prix: '$24.00', billets: 2 },
-    { nom: 'Marché Artisanal du Printemps', date: 'Acheté le 28 février 2025', prix: '$0.00', billets: 1 },
-    { nom: 'Soirée Comédie Stand-Up', date: 'Acheté le 14 février 2025', prix: '$18.00', billets: 1 },
-];
-
-const evenementsDisponibles = [
-    { nom: 'Trivia Night au Vieux-Port', date: '8 avril 2025', location: 'Bar Le Balcon', prix: '$10.00' },
-    { nom: 'Exposition Photo Urbaine', date: '15 avril 2025', location: 'Galerie Zéro1', prix: '$5.00' },
-    { nom: 'Tournoi de Pétanque', date: '26 avril 2025', location: 'Parc Maisonneuve', prix: '$0.00' },
-];
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
@@ -86,10 +59,16 @@ function SectionCard({ title, icon, children, action }) {
     );
 }
 
-function TicketRow({ nom, date, location, billets }) {
+function TicketRow({ nom, date, location, billets, eventId }) {
+    const navigate = useNavigate();
+    const handleClick = () => {
+        const bg = { pathname: window.location.pathname, search: window.location.search };
+        if (eventId) navigate(`/Evenement?id=${eventId}`, { state: { background: bg, hidePurchase: true } });
+        else if (nom) navigate(`/Evenement?@${encodeURIComponent(nom)}`, { state: { background: bg, hidePurchase: true } });
+    };
     return (
         <Box>
-            <Box sx={{ py: 2, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 2 }}>
+            <Box onClick={handleClick} sx={{ py: 2, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 2, cursor: eventId || nom ? 'pointer' : 'default', '&:hover': { backgroundColor: eventId || nom ? 'rgba(232,93,58,0.04)' : 'transparent' }, borderRadius: 0, mx: -3, px: 3, transition: 'background-color 0.1s' }}>
                 <Box sx={{ minWidth: 0 }}>
                     <Typography sx={{
                         fontFamily: "'Playfair Display', serif",
@@ -137,46 +116,90 @@ function TicketRow({ nom, date, location, billets }) {
     );
 }
 
-function PurchaseRow({ nom, date, prix, billets }) {
+function OrderRow({ order }) {
+    const [open, setOpen] = useState(false);
+    const total = order.items.reduce((s, t) => s + (t.prix || 0), 0);
+    const date  = order.ts ? new Date(order.ts).toLocaleDateString('fr-CA') : '—';
+    const code  = order.items[0]?.confirmationCode || `CMD-${date}`;
+
     return (
         <Box>
-            <Box sx={{ py: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
+            <Box onClick={() => setOpen(true)} sx={{
+                py: 2, display: 'flex', alignItems: 'center',
+                justifyContent: 'space-between', gap: 2,
+                cursor: 'pointer', mx: -3, px: 3,
+                '&:hover': { backgroundColor: 'rgba(232,93,58,0.04)' },
+                transition: 'background-color 0.1s',
+            }}>
                 <Box sx={{ minWidth: 0 }}>
-                    <Typography sx={{
-                        fontFamily: "'Playfair Display', serif",
-                        fontWeight: 600,
-                        fontSize: '0.95rem',
-                        color: '#1A1A1A',
-                        mb: 0.25,
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                    }}>
-                        {nom}
+                    <Typography sx={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.72rem', color: '#9A9A9A', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                        {date} · {order.items.length} billet{order.items.length > 1 ? 's' : ''}
                     </Typography>
-                    <Typography sx={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.78rem', color: '#9A9A9A' }}>
-                        {date} · {billets} billet{billets > 1 ? 's' : ''}
+                    <Typography sx={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.82rem', fontWeight: 700, color: '#E85D3A', letterSpacing: '0.04em', mt: 0.25 }}>
+                        {code}
                     </Typography>
                 </Box>
-                <Typography sx={{
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontWeight: 700,
-                    fontSize: '0.95rem',
-                    color: prix === '$0.00' ? '#4CAF50' : '#1A1A1A',
-                    flexShrink: 0,
-                }}>
-                    {prix === '$0.00' ? 'Gratuit' : prix}
+                <Typography sx={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 700, fontSize: '0.95rem', color: '#1A1A1A', flexShrink: 0 }}>
+                    {total === 0 ? 'Gratuit' : `$${total.toFixed(2)}`}
                 </Typography>
             </Box>
             <Divider sx={{ borderColor: '#E0DDD8' }} />
+
+            {/* Purchase detail modal */}
+            <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth
+                PaperProps={{ sx: { borderRadius: 0, border: '2px solid #1A1A1A' } }}>
+                <DialogTitle sx={{ backgroundColor: '#1A1A1A', display: 'flex', alignItems: 'center', justifyContent: 'space-between', py: 2 }}>
+                    <Box>
+                        <Typography sx={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, color: '#FAF7F2', fontSize: '1rem' }}>
+                            Détails de la commande
+                        </Typography>
+                        <Typography sx={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.78rem', color: '#E85D3A', fontWeight: 700, letterSpacing: '0.06em' }}>
+                            {code}
+                        </Typography>
+                    </Box>
+                    <IconButton onClick={() => setOpen(false)} size="small" sx={{ color: '#FAF7F2', borderRadius: 0, '&:hover': { backgroundColor: '#E85D3A' } }}>
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent sx={{ backgroundColor: '#FAF7F2', p: 0 }}>
+                    {order.items.map((t, i) => (
+                        <Box key={i} sx={{ px: 3, py: 2, borderBottom: '1px solid #E0DDD8', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
+                            <Box sx={{ minWidth: 0 }}>
+                                <Typography sx={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, fontSize: '0.95rem', color: '#1A1A1A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                    {t.eventNom}
+                                </Typography>
+                                <Typography sx={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.75rem', color: '#6B6B6B', mt: 0.25 }}>
+                                    {t.date}
+                                </Typography>
+                            </Box>
+                            <Chip label={t.prix === 0 ? 'Gratuit' : `$${Number(t.prix).toFixed(2)}`} size="small"
+                                sx={{ borderRadius: 0, backgroundColor: '#FFF3EE', color: '#E85D3A', fontFamily: "'DM Sans', sans-serif", fontWeight: 700, border: '1px solid #FFBFA9', flexShrink: 0 }} />
+                        </Box>
+                    ))}
+                    <Box sx={{ px: 3, py: 2, display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography sx={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 700, color: '#1A1A1A' }}>Total</Typography>
+                        <Typography sx={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 700, color: '#1A1A1A' }}>
+                            {total === 0 ? 'Gratuit' : `$${total.toFixed(2)}`}
+                        </Typography>
+                    </Box>
+                </DialogContent>
+                <DialogActions sx={{ backgroundColor: '#FAF7F2', borderTop: '1px solid #E0DDD8', px: 3, py: 2 }}>
+                    <Button onClick={() => setOpen(false)} variant="contained" size="small">Fermer</Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }
 
-function DiscoverRow({ nom, date, location, prix }) {
+function DiscoverRow({ nom, date, location, prix, _id }) {
+    const navigate = useNavigate();
+    const handleClick = () => {
+        if (_id) navigate(`/Evenement?id=${_id}`);
+        else if (nom) navigate(`/Evenement?@${encodeURIComponent(nom)}`);
+    };
     return (
         <Box>
-            <Box sx={{ py: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
+            <Box onClick={handleClick} sx={{ py: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, cursor: 'pointer', '&:hover': { backgroundColor: 'rgba(232,93,58,0.04)' }, mx: -3, px: 3, transition: 'background-color 0.1s' }}>
                 <Box sx={{ minWidth: 0 }}>
                     <Typography sx={{
                         fontFamily: "'Playfair Display', serif",
@@ -228,12 +251,62 @@ function DiscoverRow({ nom, date, location, prix }) {
 // ── Main page ─────────────────────────────────────────────────────────────────
 
 function Dashboard() {
-    const nomUtilisateur = getNomUtilisateur();
+    const nomUtilisateur = (() => {
+        try { const u = JSON.parse(localStorage.getItem('user') || '{}'); return u.nom ? u.nom.split(' ')[0] : ''; } catch { return ''; }
+    })();
+
+    const today = dayjs();
+    const [upcoming,  setUpcoming]  = useState([]);
+    const [recent,    setRecent]    = useState([]);
+    const [discover,  setDiscover]  = useState([]);
+
+    useEffect(() => {
+        // Fetch user's purchased tickets
+        authGet('/auth/userTickets').then(r => r.json()).then(data => {
+            if (Array.isArray(data)) {
+                // Upcoming = events whose dateISO >= today
+                setUpcoming(data
+                    .filter(t => t.dateISO && dayjs(t.dateISO).isSameOrAfter(today, 'day'))
+                    .sort((a, b) => dayjs(a.dateISO).diff(dayjs(b.dateISO)))
+                    .slice(0, 5)
+                    .map(t => ({
+                        nom:      t.eventNom,
+                        date:     t.date || t.dateISO,
+                        location: t.location || '',
+                        billets:  1,
+                        eventId:  t.eventId || '',
+                    })));
+                // Group tickets into orders (by rounding acheteLe to the second)
+                // then take the 3 most recent orders
+                const orderMap = {};
+                data.forEach(t => {
+                    const ts = t.acheteLe
+                        ? new Date(new Date(t.acheteLe).toISOString().slice(0, 19)).getTime()
+                        : 0;
+                    if (!orderMap[ts]) orderMap[ts] = { ts, items: [] };
+                    orderMap[ts].items.push(t);
+                });
+                const orders = Object.values(orderMap)
+                    .sort((a, b) => b.ts - a.ts)
+                    .slice(0, 3);
+                setRecent(orders);
+            }
+        }).catch(console.error);
+
+        // Fetch all events for the discover section
+        fetch('http://localhost:5000/auth/eventTable')
+            .then(r => r.json()).then(data => {
+                if (Array.isArray(data)) {
+                    setDiscover(data.filter(e => e.dateISO && dayjs(e.dateISO).isSameOrAfter(today, 'day'))
+                        .sort((a, b) => dayjs(a.dateISO).diff(dayjs(b.dateISO)))
+                        .slice(0, 3)
+                        .map(e => ({ ...e, _id: e._id || '' })));
+                }
+            }).catch(console.error);
+    }, []);
 
     return (
-        <div className="page-root">
-            <Navigator userName={nomUtilisateur} />
-            <div className="content-container">
+        <div className="content-container">
 
                 {/* Greeting */}
                 <Box sx={{ mb: 4 }}>
@@ -262,13 +335,13 @@ function Dashboard() {
                         title="Mes billets à venir"
                         icon={<ConfirmationNumberIcon fontSize="small" />}
                     >
-                        {ticketsAVenir.length === 0 ? (
+                        {upcoming.length === 0 ? (
                             <Typography sx={{ fontFamily: "'DM Sans', sans-serif", color: '#9A9A9A', fontSize: '0.9rem', py: 2 }}>
                                 Aucun billet à venir.
                             </Typography>
                         ) : (
-                            ticketsAVenir.map((t) => (
-                                <TicketRow key={t.nom} {...t} />
+                            upcoming.map((t) => (
+                                <TicketRow key={t.eventNom} {...t} />
                             ))
                         )}
                     </SectionCard>
@@ -278,13 +351,13 @@ function Dashboard() {
                         title="Achats récents"
                         icon={<ShoppingBagIcon fontSize="small" />}
                     >
-                        {achatsRecents.length === 0 ? (
+                        {recent.length === 0 ? (
                             <Typography sx={{ fontFamily: "'DM Sans', sans-serif", color: '#9A9A9A', fontSize: '0.9rem', py: 2 }}>
                                 Aucun achat récent.
                             </Typography>
                         ) : (
-                            achatsRecents.map((a) => (
-                                <PurchaseRow key={a.nom} {...a} />
+                            recent.map((order) => (
+                                <OrderRow key={order.ts} order={order} />
                             ))
                         )}
                     </SectionCard>
@@ -295,7 +368,7 @@ function Dashboard() {
                     title="Événements à venir près de vous"
                     icon={<CalendarTodayIcon fontSize="small" />}
                 >
-                    {evenementsDisponibles.map((e) => (
+                    {discover.map((e) => (
                         <DiscoverRow key={e.nom} {...e} />
                     ))}
 
@@ -315,7 +388,6 @@ function Dashboard() {
                     </Box>
                 </SectionCard>
 
-            </div>
         </div>
     );
 }

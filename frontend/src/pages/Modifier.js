@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import './styles.css';
-import { IconButton, Link, Typography } from '@mui/material';
+import { IconButton, Link } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ModifyComp from '../components/ModifyComp';
 
 class Modifier extends Component {
     render() {
         return (
-            <div className="auth-root">
+            <div className="auth-inner">
                 <IconButton href="/Parametres" className="auth-back-btn" size="large">
                     <ArrowBackIosIcon />
                 </IconButton>

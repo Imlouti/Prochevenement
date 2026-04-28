@@ -1,68 +1,78 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import './styles.css';
 import { Button, Box, Link, Typography } from '@mui/material';
+import { Footer } from '../components/Footer';
+import { isLoggedIn, getUserRole } from '../utils/api';
 
-class Acceuil extends Component {
-    render() {
-        return (
-            <div className="landing-root">
-                <div className="landing-accent" />
-                <div className="landing-accent-2" />
+function Acceuil() {
+    useEffect(() => {
+        if (isLoggedIn()) {
+            const role = getUserRole();
+            document.location.href = role === 'Vendeur' ? '/Vendeur' : '/Dashboard';
+        }
+    }, []);
 
-                {/* Header */}
-                <div className="landing-header">
-                    <div className="landing-logo">
-                        Proché<span>vénements</span>
-                    </div>
-                    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                        <Link
-                            href="/Connexion"
-                            sx={{
-                                fontFamily: "'DM Sans', sans-serif",
-                                fontSize: '0.9rem',
-                                color: '#9A9A9A',
-                                textDecoration: 'none',
-                                fontWeight: 500,
-                                '&:hover': { color: '#FAF7F2' },
-                            }}
-                        >
-                            Connexion
-                        </Link>
-                        <Link
-                            href="/Creation"
-                            sx={{
-                                fontFamily: "'DM Sans', sans-serif",
-                                fontSize: '0.9rem',
-                                color: '#FAF7F2',
-                                textDecoration: 'none',
-                                fontWeight: 600,
-                                border: '2px solid #E85D3A',
-                                padding: '6px 18px',
-                                '&:hover': { backgroundColor: '#E85D3A' },
-                                transition: 'background 0.15s',
-                            }}
-                        >
-                            Créer un compte
-                        </Link>
-                    </Box>
+    return (
+        <div className="landing-root">
+            <div className="landing-accent" />
+            <div className="landing-accent-2" />
+
+            {/* Header */}
+            <div className="landing-header">
+                <div className="landing-logo">
+                    Proché<span>vénements</span>
                 </div>
+                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                    <Link
+                        href="/Connexion"
+                        sx={{
+                            fontFamily: "'DM Sans', sans-serif",
+                            fontSize: '0.9rem',
+                            color: '#9A9A9A',
+                            textDecoration: 'none',
+                            fontWeight: 500,
+                            '&:hover': { color: '#FAF7F2' },
+                        }}
+                    >
+                        Connexion
+                    </Link>
+                    <Link
+                        href="/Creation"
+                        sx={{
+                            fontFamily: "'DM Sans', sans-serif",
+                            fontSize: '0.9rem',
+                            color: '#FAF7F2',
+                            textDecoration: 'none',
+                            fontWeight: 600,
+                            border: '2px solid #E85D3A',
+                            padding: '6px 18px',
+                            '&:hover': { backgroundColor: '#E85D3A' },
+                            transition: 'background 0.15s',
+                        }}
+                    >
+                        Créer un compte
+                    </Link>
+                </Box>
+            </div>
 
-                {/* Hero */}
-                <div className="landing-hero">
-                    <p className="landing-eyebrow">Plateforme de billets locaux</p>
+            {/* Hero */}
+            <div className="landing-hero">
+                <p className="landing-eyebrow">Plateforme de billets locaux</p>
 
-                    <Typography className="landing-h1" component="h1">
-                        Les événements <em>près</em><br />de vous
-                    </Typography>
+                <Typography className="landing-h1" component="h1">
+                    Les événements <em>près</em><br />de vous
+                </Typography>
 
-                    <p className="landing-sub">
-                        Découvrez et achetez des billets pour les meilleurs événements locaux — concerts, marchés, festivals et bien plus encore.
-                    </p>
+                <p className="landing-sub">
+                    Découvrez et achetez des billets pour les meilleurs événements
+                    locaux — concerts, marchés, festivals et bien plus encore.
+                </p>
 
+                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center', mb: 3 }}>
                     <Button
                         variant="contained"
                         size="large"
-                        onClick={() => { document.location.href = "Connexion"; }}
+                        onClick={() => { document.location.href = '/Connexion'; }}
                         sx={{
                             fontFamily: "'DM Sans', sans-serif",
                             fontSize: '1rem',
@@ -78,37 +88,57 @@ class Acceuil extends Component {
                                 transform: 'translate(2px, 2px)',
                             },
                             transition: 'all 0.15s ease',
-                            mb: 3,
                         }}
                     >
                         Se connecter
                     </Button>
 
-                    <Typography sx={{
-                        fontFamily: "'DM Sans', sans-serif",
-                        fontSize: '0.9rem',
-                        color: '#6B6B6B',
-                    }}>
-                        Pas encore de compte ?{' '}
-                        <Link
-                            href="/Creation"
-                            sx={{
-                                color: '#C9A84C',
-                                fontWeight: 600,
-                                textDecorationColor: '#C9A84C',
-                                '&:hover': { color: '#FAF7F2' },
-                            }}
-                        >
-                            Créer un compte gratuitement
-                        </Link>
-                    </Typography>
-                </div>
+                    <Button
+                        variant="outlined"
+                        size="large"
+                        onClick={() => { document.location.href = '/Magasiner'; }}
+                        sx={{
+                            fontFamily: "'DM Sans', sans-serif",
+                            fontSize: '1rem',
+                            fontWeight: 600,
+                            padding: '14px 48px',
+                            borderRadius: 0,
+                            borderColor: '#FAF7F2',
+                            borderWidth: '2px',
+                            color: '#FAF7F2',
+                            boxShadow: 'none',
+                            '&:hover': {
+                                backgroundColor: 'rgba(250,247,242,0.08)',
+                                borderColor: '#FAF7F2',
+                                borderWidth: '2px',
+                                transform: 'none',
+                                boxShadow: 'none',
+                            },
+                        }}
+                    >
+                        Parcourir les événements
+                    </Button>
+                </Box>
 
-                {/* Faint map watermark */}
-                <img src="map.png" className="landing-map-img" alt="" />
+                <Typography sx={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.9rem', color: '#6B6B6B' }}>
+                    Pas encore de compte ?{' '}
+                    <Link
+                        href="/Creation"
+                        sx={{
+                            color: '#C9A84C',
+                            fontWeight: 600,
+                            textDecorationColor: '#C9A84C',
+                            '&:hover': { color: '#FAF7F2' },
+                        }}
+                    >
+                        Créer un compte gratuitement
+                    </Link>
+                </Typography>
             </div>
-        );
-    }
+
+            <Footer />
+        </div>
+    );
 }
 
 export default Acceuil;

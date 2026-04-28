@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { BASE_URL } from '../utils/api';
 import { Grid2, Button, OutlinedInput, InputLabel, InputAdornment, IconButton, FormControl } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -100,7 +101,7 @@ export default function ReinitializeComp() {
           }
 
           try {
-            const response = await fetch('http://localhost:5000/auth/reinitialize', {
+            const response = await fetch(`${BASE_URL}/auth/reinitialize`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(reinitialiser),

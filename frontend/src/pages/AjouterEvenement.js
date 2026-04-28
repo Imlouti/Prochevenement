@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import './styles.css';
-import { IconButton, Typography } from '@mui/material';
+import { IconButton } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import AddEvent from '../components/AddEvent';
 
 class AjouterEvenement extends Component {
     render() {
         return (
-            <div className="auth-root">
+            <div className="auth-inner">
                 <IconButton href="/Vendeur" className="auth-back-btn" size="large">
                     <ArrowBackIosIcon />
                 </IconButton>

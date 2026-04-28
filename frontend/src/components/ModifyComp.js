@@ -1,41 +1,59 @@
-import React from 'react';
-import { Grid2, Button, TextField, FormControl } from '@mui/material';
-
-var eventInfo = [];
-
-const event = {
-    courriel: localStorage.getItem('courriel')
-};
-
-try {
-    const response = await fetch('http://localhost:5000/auth/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(event)
-    });
-    const data = await response.json();
-    if (response.ok) {
-        eventInfo.push(data.nom);
-        eventInfo.push(data.postal);
-    }
-} catch (error) {
-    console.error('There was an error loading user info:', error);
-}
+import React, { useState, useEffect } from 'react';
+import { Grid2, Button, TextField, FormControl, CircularProgress } from '@mui/material';
+import { authPost } from '../utils/api';
 
 export default function ModifyComp() {
+    const [nom,     setNom]     = useState('');
+    const [postal,  setPostal]  = useState('');
+    const [loading, setLoading] = useState(true);
+
+    // FIX: was top-level await — now a proper useEffect
+    useEffect(() => {
+        const load = async () => {
+            try {
+                const res  = await authPost('/auth/search', {});
+                const data = await res.json();
+                if (res.ok) {
+                    setNom(data.nom     ?? '');
+                    setPostal(data.postal ?? '');
+                } else {
+                    console.error('[ModifyComp] search:', data.message);
+                }
+            } catch (err) {
+                console.error('[ModifyComp] load error:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        load();
+    }, []);
+
+    if (loading) {
+        return <CircularProgress size={28} sx={{ color: '#E85D3A', display: 'block', mx: 'auto', my: 4 }} />;
+    }
+
     return (
-        <Grid2
-            container
-            spacing={0}
-            direction="column"
-            sx={{ width: '100%' }}
-        >
+        <Grid2 container spacing={0} direction="column" sx={{ width: '100%' }}>
             <FormControl sx={{ mb: 2, width: '100%' }} variant="outlined">
-                <TextField id="nom" label="Nom" defaultValue={eventInfo[0]} variant="outlined" fullWidth />
+                <TextField
+                    id="nom"
+                    label="Nom"
+                    value={nom}
+                    onChange={e => setNom(e.target.value)}
+                    variant="outlined"
+                    fullWidth
+                />
             </FormControl>
 
             <FormControl sx={{ mb: 2, width: '100%' }} variant="outlined">
-                <TextField id="postal" label="Code postal" defaultValue={eventInfo[1]} variant="outlined" fullWidth />
+                <TextField
+                    id="postal"
+                    label="Code postal"
+                    value={postal}
+                    onChange={e => setPostal(e.target.value)}
+                    variant="outlined"
+                    fullWidth
+                />
             </FormControl>
 
             <Button
@@ -46,33 +64,21 @@ export default function ModifyComp() {
                 onClick={async () => {
                     document.getElementById('hidden').style.display = 'none';
 
-                    let courriel = localStorage.getItem('courriel');
-                    const modifier = {
-                        courriel,
-                        nom: document.getElementById('nom').value,
-                        postal: document.getElementById('postal').value,
-                    };
-
-                    const isAtLeastOneNull = Object.values(modifier).some(i => i === '');
-                    if (isAtLeastOneNull) {
+                    if (!nom.trim() || !postal.trim()) {
                         document.getElementById('hidden').style.display = 'block';
                         return;
                     }
 
                     try {
-                        const response = await fetch('http://localhost:5000/auth/modify', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(modifier),
-                        });
-                        const data = await response.json();
-                        if (response.ok) {
-                            document.location.href = 'Parametres';
+                        const res  = await authPost('/auth/modify', { nom, postal });
+                        const data = await res.json();
+                        if (res.ok) {
+                            document.location.href = '/Parametres';
                         } else {
-                            console.error('Error:', data);
+                            console.error('[ModifyComp] modify:', data.message);
                         }
-                    } catch (error) {
-                        console.error('There was an error modifying the account:', error);
+                    } catch (err) {
+                        console.error('[ModifyComp] modify error:', err);
                     }
                 }}
             >
@@ -83,25 +89,22 @@ export default function ModifyComp() {
                 variant="outlined"
                 fullWidth
                 size="large"
-                sx={{ borderColor: '#C0392B', color: '#C0392B', '&:hover': { backgroundColor: '#C0392B', color: '#FAF7F2', borderColor: '#C0392B', boxShadow: 'none' } }}
+                sx={{
+                    borderColor: '#C0392B', color: '#C0392B',
+                    '&:hover': { backgroundColor: '#C0392B', color: '#FAF7F2', borderColor: '#C0392B', boxShadow: 'none' },
+                }}
                 onClick={async () => {
-                    let courriel = localStorage.getItem('courriel');
-                    const supprimer = { courriel };
-
                     try {
-                        const response = await fetch('http://localhost:5000/auth/delete', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(supprimer),
-                        });
-                        const data = await response.json();
-                        if (response.ok) {
+                        const res = await authPost('/auth/delete', {});
+                        if (res.ok) {
+                            localStorage.removeItem('user');
                             document.location.href = '/';
                         } else {
-                            console.error('Error:', data);
+                            const data = await res.json();
+                            console.error('[ModifyComp] delete:', data.message);
                         }
-                    } catch (error) {
-                        console.error('There was an error deleting the account:', error);
+                    } catch (err) {
+                        console.error('[ModifyComp] delete error:', err);
                     }
                 }}
             >

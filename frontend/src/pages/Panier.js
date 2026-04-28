@@ -1,48 +1,34 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import './styles.css';
-import { Navigator } from '../components/Navigator';
 import { CartTable } from '../components/CartTable';
 import { Button, Typography, Box } from '@mui/material';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 
-function getNomUtilisateur() {
-    const stored = localStorage.getItem('nom');
-    if (!stored) return '';
-    try {
-        const parsed = JSON.parse(stored);
-        return parsed.nom ? parsed.nom.split(' ')[0] : stored.split(',')[0].split(' ')[0];
-    } catch {
-        return stored.split(',')[0].split(' ')[0];
-    }
-}
+function Panier() {
+    const [cartCount, setCartCount] = useState(0);
 
-class Panier extends Component {
-    render() {
-        const nomUtilisateur = getNomUtilisateur();
-        return (
-            <div className="page-root">
-                <Navigator userName={nomUtilisateur} />
-                <div className="content-container">
-                    <Typography className="page-title" component="h1">
-                        Mon panier
-                    </Typography>
+    return (
+        <div className="content-container">
+            <Typography className="page-title" component="h1">
+                Mon panier
+            </Typography>
 
-                    <CartTable />
+            {/* CartTable calls onCartChange whenever items change */}
+            <CartTable onCartChange={setCartCount} />
 
-                    <Box sx={{ mt: 4, textAlign: 'right' }}>
-                        <Button
-                            variant="contained"
-                            size="large"
-                            startIcon={<ShoppingBagIcon />}
-                            onClick={() => { document.location.href = '/Acheter'; }}
-                        >
-                            Procéder à l'achat
-                        </Button>
-                    </Box>
-                </div>
-            </div>
-        );
-    }
+            <Box sx={{ mt: 4, textAlign: 'right' }}>
+                <Button
+                    variant="contained"
+                    size="large"
+                    startIcon={<ShoppingBagIcon />}
+                    disabled={cartCount === 0}
+                    onClick={() => { document.location.href = '/Acheter'; }}
+                >
+                    Procéder à l'achat
+                </Button>
+            </Box>
+        </div>
+    );
 }
 
 export default Panier;

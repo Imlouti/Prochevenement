@@ -1,4 +1,5 @@
 import React from 'react';
+import { BASE_URL } from '../utils/api';
 import { FormControlLabel, Checkbox, Grid2, Button, OutlinedInput, InputLabel, InputAdornment, IconButton, FormControl } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -120,7 +121,7 @@ export default function RegisterComp() {
           }
 
           try {
-            const response = await fetch('http://localhost:5000/auth/register', {
+            const response = await fetch(`${BASE_URL}/auth/register`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(user),
@@ -129,12 +130,27 @@ export default function RegisterComp() {
             const data = await response.json();
 
             if (response.ok) {
-              document.location.href = 'Connexion';
+              // If the guest had events in their cart, send them back to the
+              // shopping page so their cart is still there
+              try {
+                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                document.location.href = cart.length > 0 ? '/Magasiner' : '/Connexion';
+              } catch {
+                document.location.href = '/Connexion';
+              }
             } else {
-              console.error('Error:', data);
+              const errEl = document.getElementById('hidden');
+              if (errEl) {
+                errEl.textContent = data.message || 'Erreur lors de la création du compte.';
+                errEl.style.display = 'block';
+              }
             }
           } catch (error) {
-            console.error('There was an error creating the account:', error);
+            const errEl = document.getElementById('hidden');
+            if (errEl) {
+              errEl.textContent = 'Erreur de connexion au serveur.';
+              errEl.style.display = 'block';
+            }
           }
         }}
       >

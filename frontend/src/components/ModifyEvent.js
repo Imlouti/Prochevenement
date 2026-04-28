@@ -1,223 +1,164 @@
-import React from "react";
-import {  Paper, Grid2, Button, TextField, OutlinedInput, InputLabel, InputAdornment, IconButton, FormControl } from '@mui/material';
-
+import React, { useState, useEffect } from 'react';
+import { Button, TextField, Typography, Box, CircularProgress, Alert } from '@mui/material';
 import dayjs from 'dayjs';
-
-
-import { useTheme } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs }         from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker }           from '@mui/x-date-pickers/DatePicker';
+import { TimePicker }           from '@mui/x-date-pickers/TimePicker';
+import { publicPost, authPost } from '../utils/api';
+import { LocationAutocomplete } from './LocationAutocomplete';
 
-
-var idx = document.URL.indexOf('@');
-var list = document.URL.split("");
-var params = new Array();
-  for (var i=idx+1; i<list.length; i++) {
-    params.push(list[i]);
-     }
-  
-  params=params.join("");
-
-  var eventInfo=[];
-  eventInfo.push(params);
-
-  const event = {
-    nom: params
-};
-
-
-
- // Envoi des données de connexion au backend (voire app.js route de connexion pour plus de detail) pour vérifier les identifiants
- try {
-    const response = await fetch('http://localhost:5000/auth/eventSearch', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(event)
-    });
-
-    const data = await response.json();
-    console.log(data);
-
-    if (response.ok) {
-        // Si la connexion est réussie, 
-        // Enregistrez les informations de l'utilisateur dans le localStorage
-        eventInfo.push(data.description);
-        eventInfo.push(data.prix);
-        eventInfo.push(data.date);
-        eventInfo.push(data.location);
-        eventInfo.push(data.billets);
-    } 
-} catch (error) { //pour toute autre erreurs
-    console.error('There was an error logging in:', error);
+function getEventIdFromUrl() {
+    return new URLSearchParams(window.location.search).get('id') || '';
+}
+function getEventNameFromUrl() {
+    const idx = document.URL.indexOf('@');
+    return idx !== -1 ? decodeURIComponent(document.URL.slice(idx + 1)) : '';
 }
 
-
-
-
-
-
-
 export default function ModifyEvent() {
-    const [value, setValue] = React.useState(dayjs(eventInfo[3]));
-  
-  //le formulaire de modification a le nom, courriel et le mot de passe (la modification du courriel nest pas possible)
-    const theme = useTheme();
+    const eventId  = getEventIdFromUrl();
+    const eventNom = getEventNameFromUrl();
+
+    const [description, setDescription] = useState('');
+    const [prix,        setPrix]        = useState('');
+    const [location,    setLocation]    = useState('');
+    const [billets,     setBillets]     = useState('');
+    const [startDate,   setStartDate]   = useState(dayjs());
+    const [endDate,     setEndDate]     = useState(dayjs());
+    const [startTime,   setStartTime]   = useState(dayjs().hour(18).minute(0));
+    const [endTime,     setEndTime]     = useState(dayjs().hour(21).minute(0));
+    const [nomDisplay,  setNomDisplay]  = useState(eventNom);
+    const [loading,     setLoading]     = useState(true);
+    const [lat,         setLat]         = useState(null);
+    const [lng,         setLng]         = useState(null);
+    const [error,       setError]       = useState('');
+    const [success,     setSuccess]     = useState('');
+
+    useEffect(() => {
+        const load = async () => {
+            try {
+                const res  = await publicPost('/auth/eventSearch', eventId ? { id: eventId } : { nom: eventNom });
+                const data = await res.json();
+                if (res.ok) {
+                    setNomDisplay(data.nom || eventNom);
+                    setDescription(data.description || '');
+                    setPrix(String(data.prix ?? ''));
+                    setLocation(data.location || '');
+                    setBillets(String(data.billets ?? ''));
+                    setStartDate(data.dateISO ? dayjs(data.dateISO) : dayjs());
+                    setEndDate(data.endDateISO ? dayjs(data.endDateISO) : data.dateISO ? dayjs(data.dateISO) : dayjs());
+                    setStartTime(dayjs().hour(data.startHour ?? 18).minute(data.startMinute ?? 0));
+                    setEndTime(dayjs().hour(data.endHour ?? 21).minute(data.endMinute ?? 0));
+                }
+            } catch (err) {
+                console.error('[ModifyEvent] load error:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        if (eventId || eventNom) load();
+        else setLoading(false);
+    }, []);
+
+    const handleSave = async () => {
+        setError(''); setSuccess('');
+        try {
+            const res = await authPost('/auth/eventModify', {
+                id:          eventId || undefined,
+                nom:         nomDisplay,
+                description, prix,
+                date:        startDate.format('D MMM. YYYY'),
+                dateISO:     startDate.format('YYYY-MM-DD'),
+                endDateISO:  endDate.format('YYYY-MM-DD'),
+                startHour:   startTime.hour(),
+                startMinute: startTime.minute(),
+                endHour:     endTime.hour(),
+                endMinute:   endTime.minute(),
+                location, billets,
+                ...(lat !== null ? { lat, lng } : {}),
+            });
+            if (res.ok) document.location.href = '/Vendeur';
+            else setError((await res.json()).message || 'Erreur lors de la modification.');
+        } catch { setError('Erreur de connexion.'); }
+    };
+
+    const handleDelete = async () => {
+        setError('');
+        try {
+            const res = await authPost('/auth/eventDelete', { id: eventId || undefined, nom: nomDisplay });
+            if (res.ok) document.location.href = '/Vendeur';
+            else setError((await res.json()).message || 'Erreur lors de la suppression.');
+        } catch { setError('Erreur de connexion.'); }
+    };
+
+    if (loading) return <CircularProgress size={28} sx={{ color: '#E85D3A', display: 'block', mx: 'auto', my: 4 }} />;
+
+    const fieldSx = { mb: 2, width: '100%' };
+    const labelSx = {
+        fontFamily: "'DM Sans', sans-serif",
+        fontSize: '0.78rem', fontWeight: 600,
+        color: '#6B6B6B', mb: 0.5,
+        textTransform: 'uppercase', letterSpacing: '0.06em',
+    };
+
     return (
-        <Paper sx={{ textAlign: "center" }}>
+        <Box sx={{ width: '100%' }}>
+            <TextField label="Description" value={description}
+                onChange={e => setDescription(e.target.value)}
+                fullWidth multiline rows={3} sx={fieldSx} />
 
-        <Grid2
-            container
-            spacing={0}
-            direction="column"
-            sx={{backgroundColor: "transparent"}}
-        >
+            <TextField label="Prix ($)" value={prix} type="number"
+                onChange={e => setPrix(e.target.value)} fullWidth sx={fieldSx} />
 
-           
+            <LocationAutocomplete
+                label="Adresse / Lieu"
+                value={location}
+                onChange={val => { setLocation(val); setLat(null); setLng(null); }}
+                onSelect={({ address, lat: la, lng: lo }) => { setLocation(address); setLat(la); setLng(lo); }}
+                sx={fieldSx}
+            />
 
-            <FormControl sx={{ m: 1, width: '500px', alignSelf: 'center', backgroundColor: "transparent" }} variant="outlined">
+            <TextField label="Nombre de billets" value={billets} type="number"
+                onChange={e => setBillets(e.target.value)} fullWidth sx={fieldSx} />
 
-                <TextField id='description' label="Description" defaultValue={eventInfo[1]} variant="outlined"/>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
+                <Typography sx={labelSx}>Début</Typography>
+                <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                    <DatePicker label="Date de début" value={startDate}
+                        onChange={v => { setStartDate(v); if (v && v.isAfter(endDate)) setEndDate(v); }}
+                        sx={{ flex: 1 }} />
+                    <TimePicker label="Heure de début" value={startTime}
+                        onChange={v => setStartTime(v)} sx={{ flex: 1 }}
+                        ampm={false} />
+                </Box>
 
-            </FormControl>
+                <Typography sx={labelSx}>Fin</Typography>
+                <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                    <DatePicker label="Date de fin" value={endDate}
+                        minDate={startDate}
+                        onChange={v => setEndDate(v)}
+                        sx={{ flex: 1 }} />
+                    <TimePicker label="Heure de fin" value={endTime}
+                        onChange={v => setEndTime(v)} sx={{ flex: 1 }}
+                        ampm={false} />
+                </Box>
+            </LocalizationProvider>
 
-            <FormControl sx={{ m: 1, width: '500px', alignSelf: 'center', backgroundColor: "transparent" }} variant="outlined">
-            <TextField id='prix' label="Prix" defaultValue={eventInfo[2]} variant="outlined"/>
+            {error   && <Alert severity="error"   sx={{ mb: 2, borderRadius: 0 }}>{error}</Alert>}
+            {success && <Alert severity="success" sx={{ mb: 2, borderRadius: 0 }}>{success}</Alert>}
 
+            <Button variant="contained" fullWidth size="large" sx={{ mb: 2 }} onClick={handleSave}>
+                Enregistrer les modifications
+            </Button>
 
-</FormControl>
-
-
-<FormControl sx={{ m: 1, width: '500px', alignSelf: 'center', backgroundColor: "transparent" }} variant="outlined">
-
-<LocalizationProvider dateAdapter={AdapterDayjs}>
-
-<DatePicker label="Date"           value={value}
-          onChange={(newValue) => setValue(newValue)} />
-</LocalizationProvider>
-</FormControl>
-
-<FormControl sx={{ m: 1, width: '500px', alignSelf: 'center', backgroundColor: "transparent" }} variant="outlined">
-<TextField id='addresse' label="Addresse" defaultValue={eventInfo[4]} variant="outlined"/>
-
-
-</FormControl>
-
-<FormControl sx={{ m: 1, width: '500px', alignSelf: 'center', backgroundColor: "transparent" }} variant="outlined">
-
-<TextField id='billets' label="Billets" defaultValue={eventInfo[5]} variant="outlined"/>
-
-</FormControl>
-
-       
-
-            <Button 
-                label="Login" 
-                sx={{ 
-                m: 1,
-                alignSelf: 'center',
-                width:"25%" 
-                }}
-                variant="contained"
-                onClick={async() => {
-
-                    console.log('Form Submitted');  // Débogage
-            // Donnees a modifier du formulaire
-            const modifier = {
-                nom: eventInfo[0],
-                description: document.getElementById("description").value,
-                prix: document.getElementById("prix").value,
-                date: value.toString(),
-                location: document.getElementById("addresse").value,
-                billets: document.getElementById("billets").value
-            };
-
-            // Voire si un des champs est vide
-            const isAtLeastOneNull = Object.values(modifier).some(i => i === "");
-            if (isAtLeastOneNull) {
-                document.getElementById("hidden").style.display = "block"; // Message d'erreur si vide
-                return;
-            }
-
-
-            // Envoie les donnees au backend pour le mettre a jour
-            try {
-                const response = await fetch('http://localhost:5000/auth/eventModify', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(modifier) 
-                });
-
-                const data = await response.json();
-                console.log(data);    
-
-                if (response.ok) {
-                    // Redirection vers la page parametres apres une modification reussi
-                    document.location.href = "Vendeur";
-                } else {
-                    // Gerer les erreurs du serveur 
-                    console.error('Error:', data);
-                }
-            } catch (error) {
-                console.error('There was an error reinitializing the password:', error);
-            }
+            <Button variant="outlined" fullWidth size="large" onClick={handleDelete}
+                sx={{
+                    borderColor: '#C0392B', color: '#C0392B', borderRadius: 0,
+                    '&:hover': { backgroundColor: '#C0392B', color: '#FAF7F2', borderColor: '#C0392B', boxShadow: 'none' },
                 }}>
-                Modifier
-                </Button>
-
-                <Button 
-                label="Login" 
-                sx={{ 
-                m: 1,
-                alignSelf: 'center',
-                width:"25%" 
-                }}
-                variant="contained"
-                onClick={async() => {
-
-                    console.log('Form Submitted');  // Débogage
-            // Donnees a modifier du formulaire
-            const supprimer = {
-                nom: eventInfo[0]
-                        };
-
-            // Voire si un des champs est vide
-
-
-            // Envoie les donnees au backend pour le mettre a jour
-            try {
-                const response = await fetch('http://localhost:5000/auth/eventDelete', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(supprimer) 
-                });
-
-                const data = await response.json();
-                console.log(data);    
-
-                if (response.ok) {
-                    // Redirection vers la page parametres apres une modification reussi
-                    document.location.href = "Vendeur";
-                } else {
-                    // Gerer les erreurs du serveur 
-                    console.error('Error:', data);
-                }
-            } catch (error) {
-                console.error('There was an error reinitializing the password:', error);
-            }
-                }}>
-                Supprimer
-                </Button>
-
-        </Grid2>
-
-        </Paper>
+                Supprimer l'événement
+            </Button>
+        </Box>
     );
-
 }

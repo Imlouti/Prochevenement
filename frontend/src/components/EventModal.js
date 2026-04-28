@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import './styles.css';
-import { Button, Typography, Box, CircularProgress, Alert, IconButton } from '@mui/material';
+import { useNavigate, useLocation } from 'react-router-dom';
+import {
+    Box, Typography, Button, CircularProgress, IconButton,
+    Backdrop, Alert,
+} from '@mui/material';
+import CloseIcon              from '@mui/icons-material/Close';
 import LocationOnIcon         from '@mui/icons-material/LocationOn';
 import CalendarTodayIcon      from '@mui/icons-material/CalendarToday';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import AttachMoneyIcon        from '@mui/icons-material/AttachMoney';
 import AccessTimeIcon         from '@mui/icons-material/AccessTime';
-import StorefrontIcon         from '@mui/icons-material/Storefront';
 import AddIcon                from '@mui/icons-material/Add';
 import RemoveIcon             from '@mui/icons-material/Remove';
 import { fmtTime } from '../utils/time';
@@ -20,17 +23,12 @@ function getEventNameFromUrl() {
     const idx = document.URL.indexOf('@');
     return idx !== -1 ? decodeURIComponent(document.URL.slice(idx + 1)) : '';
 }
-
-
 function addToGuestCart(eventId, eventNom, qty) {
     try {
         const cart = JSON.parse(localStorage.getItem('cart') || '[]');
         const existing = cart.find(i => i.id === eventId || i.nom === eventNom);
-        if (existing) {
-            existing.quantity = (existing.quantity || 1) + qty;
-        } else {
-            cart.push({ id: eventId, nom: eventNom, quantity: qty });
-        }
+        if (existing) existing.quantity = (existing.quantity || 1) + qty;
+        else cart.push({ id: eventId, nom: eventNom, quantity: qty });
         localStorage.setItem('cart', JSON.stringify(cart));
         window.dispatchEvent(new Event('storage'));
     } catch {
@@ -39,10 +37,13 @@ function addToGuestCart(eventId, eventNom, qty) {
     document.location.href = '/Connexion';
 }
 
-function Evenement() {
+export function EventModal() {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const loggedIn     = isLoggedIn();
+    const hidePurchase = location.state?.hidePurchase === true;
     const eventId  = getEventIdFromUrl();
     const eventNom = getEventNameFromUrl();
-    const loggedIn = isLoggedIn();
 
     const [event,     setEvent]     = useState(null);
     const [loading,   setLoading]   = useState(true);
@@ -50,12 +51,17 @@ function Evenement() {
     const [cartMsg,   setCartMsg]   = useState(null);
     const [cartError, setCartError] = useState(null);
     const [adding,    setAdding]    = useState(false);
-    const [qty,         setQty]         = useState(1);
-    const [alreadyOwned, setAlreadyOwned] = useState(false);
+    const [qty,           setQty]           = useState(1);
+    const [alreadyOwned,  setAlreadyOwned]  = useState(false);
+
+    const handleClose = () => {
+        const bg = location.state?.background;
+        navigate(bg ? bg.pathname + (bg.search || '') : '/Magasiner');
+    };
 
     useEffect(() => {
         if (!eventId && !eventNom) {
-            setError("Événement introuvable.");
+            setError('Événement introuvable.');
             setLoading(false);
             return;
         }
@@ -75,26 +81,25 @@ function Evenement() {
         load();
     }, [eventId, eventNom]);
 
-    // Check if user already owns a ticket for this event
     useEffect(() => {
-        if (!loggedIn) return;
+        if (!loggedIn || !event) return;
         authGet('/auth/userTickets')
             .then(r => r.json())
             .then(tickets => {
                 if (Array.isArray(tickets)) {
                     const owned = tickets.some(t =>
                         (eventId && t.eventId === eventId) ||
-                        (t.eventNom && t.eventNom === (event?.nom || eventNom))
+                        (t.eventNom && t.eventNom === event.nom)
                     );
                     setAlreadyOwned(owned);
                 }
             })
             .catch(() => {});
-    }, [loggedIn, eventId, event?.nom, eventNom]);
+    }, [loggedIn, event, eventId]);
 
     const handleAcheter = async () => {
         if (!loggedIn) {
-            addToGuestCart(eventId, eventNom, qty);
+            addToGuestCart(eventId, event?.nom || eventNom, qty);
             return;
         }
         setAdding(true);
@@ -102,12 +107,13 @@ function Evenement() {
         setCartError(null);
         try {
             const res  = await authPost('/auth/cart/add', {
-                id: eventId || undefined,
-                nom: event?.nom || eventNom,
+                id:       eventId || undefined,
+                nom:      event?.nom || eventNom,
                 quantity: qty,
             });
             const data = await res.json();
             if (res.ok) {
+                // Sync localStorage badge
                 try {
                     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
                     const existing = cart.find(i => i.id === eventId || i.nom === (event?.nom || eventNom));
@@ -131,46 +137,58 @@ function Evenement() {
         }
     };
 
-    const title = event?.nom || eventNom || 'Événement';
-
     const isExpired = event
         ? dayjs(event.endDateISO || event.dateISO).isBefore(dayjs(), 'day')
         : false;
 
-    // Build date range display
+    const title = event?.nom || eventNom || '…';
     const dateDisplay = event
-        ? (event.endDateISO && event.endDateISO !== event.dateISO)
+        ? (event.endDateISO && event.endDateISO !== event.dateISO
             ? `${event.date} – ${event.endDateISO}`
-            : event.date
+            : event.date)
         : '—';
 
     return (
-        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', pt: 4, pb: 4, px: 2 }}>
-            <Box sx={{
-                width: '100%', maxWidth: 640,
+        <>
+            <Backdrop open onClick={handleClose}
+                sx={{ zIndex: 1200, backgroundColor: 'rgba(20,20,20,0.85)' }} />
+
+            <Box onClick={e => e.stopPropagation()} sx={{
+                position: 'fixed', top: '50%', left: '50%',
+                transform: 'translate(-50%, -50%)',
+                zIndex: 1300, width: '100%', maxWidth: 620,
+                maxHeight: '90vh', overflowY: 'auto',
                 border: '2px solid #1A1A1A',
                 boxShadow: '8px 8px 0px #E85D3A',
                 backgroundColor: '#FAF7F2',
-                overflow: 'hidden',
             }}>
-                <Box sx={{ backgroundColor: '#1A1A1A', px: 4, py: 3 }}>
-                    <Typography sx={{
-                        fontFamily: "'Playfair Display', serif",
-                        fontSize: '1.8rem', fontWeight: 700, color: '#FAF7F2',
-                    }}>
-                        {title}
-                    </Typography>
-                    {event?.vendeurNom && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mt: 0.75 }}>
-                            <StorefrontIcon sx={{ fontSize: 14, color: '#C9A84C' }} />
+                {/* Header */}
+                <Box sx={{
+                    backgroundColor: '#1A1A1A', px: 4, py: 3,
+                    display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
+                }}>
+                    <Box sx={{ flex: 1, pr: 2 }}>
+                        <Typography sx={{
+                            fontFamily: "'Playfair Display', serif",
+                            fontSize: '1.6rem', fontWeight: 700, color: '#FAF7F2',
+                        }}>
+                            {title}
+                        </Typography>
+                        {event?.vendeurNom && (
                             <Typography sx={{
                                 fontFamily: "'DM Sans', sans-serif",
-                                fontSize: '0.82rem', color: '#C9A84C', fontWeight: 500,
+                                fontSize: '0.78rem', color: '#C9A84C', mt: 0.5,
                             }}>
                                 {event.vendeurNom}
                             </Typography>
-                        </Box>
-                    )}
+                        )}
+                    </Box>
+                    <IconButton onClick={handleClose} size="small" sx={{
+                        color: '#FAF7F2', borderRadius: 0, flexShrink: 0,
+                        '&:hover': { backgroundColor: '#E85D3A' },
+                    }}>
+                        <CloseIcon />
+                    </IconButton>
                 </Box>
 
                 <Box sx={{ p: 4 }}>
@@ -182,7 +200,10 @@ function Evenement() {
                         </Typography>
                     ) : (
                         <>
-                            <Typography sx={{ fontFamily: "'DM Sans', sans-serif", fontSize: '1rem', color: '#6B6B6B', mb: 4, lineHeight: 1.7 }}>
+                            <Typography sx={{
+                                fontFamily: "'DM Sans', sans-serif",
+                                fontSize: '1rem', color: '#6B6B6B', mb: 4, lineHeight: 1.7,
+                            }}>
                                 {event.description}
                             </Typography>
 
@@ -194,13 +215,22 @@ function Evenement() {
                                     { icon: <LocationOnIcon />,         label: 'Lieu',             value: event.location },
                                     { icon: <ConfirmationNumberIcon />, label: 'Billets restants', value: event.billets },
                                 ].map(({ icon, label, value }) => (
-                                    <Box key={label} sx={{ border: '1px solid #E0DDD8', p: 2, display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+                                    <Box key={label} sx={{
+                                        border: '1px solid #E0DDD8', p: 2,
+                                        display: 'flex', alignItems: 'flex-start', gap: 1.5,
+                                    }}>
                                         <Box sx={{ color: '#E85D3A', mt: 0.25 }}>{icon}</Box>
                                         <Box>
-                                            <Typography sx={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#9A9A9A', fontWeight: 600 }}>
+                                            <Typography sx={{
+                                                fontSize: '0.7rem', textTransform: 'uppercase',
+                                                letterSpacing: '0.1em', color: '#9A9A9A', fontWeight: 600,
+                                            }}>
                                                 {label}
                                             </Typography>
-                                            <Typography sx={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600, color: '#1A1A1A' }}>
+                                            <Typography sx={{
+                                                fontFamily: "'DM Sans', sans-serif",
+                                                fontWeight: 600, color: '#1A1A1A',
+                                            }}>
                                                 {value}
                                             </Typography>
                                         </Box>
@@ -211,32 +241,40 @@ function Evenement() {
                             {/* Quantity selector */}
                             {event.billets > 0 && !isExpired && (
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-                                    <Typography sx={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 600, color: '#1A1A1A', fontSize: '0.9rem' }}>
+                                    <Typography sx={{
+                                        fontFamily: "'DM Sans', sans-serif",
+                                        fontWeight: 600, color: '#1A1A1A', fontSize: '0.9rem',
+                                    }}>
                                         Quantité :
                                     </Typography>
                                     <Box sx={{ display: 'flex', alignItems: 'center', border: '2px solid #1A1A1A' }}>
-                                        <IconButton size="small" onClick={() => setQty(q => Math.max(1, q - 1))}
+                                        <IconButton size="small"
+                                            onClick={() => setQty(q => Math.max(1, q - 1))}
                                             sx={{ borderRadius: 0, '&:hover': { backgroundColor: '#F5F2ED' } }}>
                                             <RemoveIcon fontSize="small" />
                                         </IconButton>
-                                        <Typography sx={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 700, minWidth: 32, textAlign: 'center' }}>
+                                        <Typography sx={{
+                                            fontFamily: "'DM Sans', sans-serif",
+                                            fontWeight: 700, minWidth: 32, textAlign: 'center',
+                                        }}>
                                             {qty}
                                         </Typography>
-                                        <IconButton size="small" onClick={() => setQty(q => Math.min(event.billets, q + 1))}
+                                        <IconButton size="small"
+                                            onClick={() => setQty(q => Math.min(event.billets, q + 1))}
                                             sx={{ borderRadius: 0, '&:hover': { backgroundColor: '#F5F2ED' } }}>
                                             <AddIcon fontSize="small" />
                                         </IconButton>
                                     </Box>
                                     {event.prix > 0 && (
-                                        <Typography sx={{ fontFamily: "'DM Sans', sans-serif", color: '#6B6B6B', fontSize: '0.88rem' }}>
+                                        <Typography sx={{
+                                            fontFamily: "'DM Sans', sans-serif",
+                                            color: '#6B6B6B', fontSize: '0.88rem',
+                                        }}>
                                             = ${(event.prix * qty).toFixed(2)}
                                         </Typography>
                                     )}
                                 </Box>
                             )}
-
-                            {cartMsg   && <Alert severity="success" sx={{ mb: 2, borderRadius: 0 }}>{cartMsg} <a href="/Panier" style={{ color: '#2E7D32', fontWeight: 600 }}>Voir le panier →</a></Alert>}
-                            {cartError && <Alert severity="warning" sx={{ mb: 2, borderRadius: 0 }}>{cartError}</Alert>}
 
                             {alreadyOwned && (
                                 <Box sx={{
@@ -253,7 +291,21 @@ function Evenement() {
                                 </Box>
                             )}
 
-                            {isExpired ? (
+                            {cartMsg && (
+                                <Alert severity="success" sx={{ mb: 2, borderRadius: 0 }}>
+                                    {cartMsg}{' '}
+                                    <a href="/Panier" style={{ color: '#2E7D32', fontWeight: 600 }}>
+                                        Voir le panier →
+                                    </a>
+                                </Alert>
+                            )}
+                            {cartError && (
+                                <Alert severity="warning" sx={{ mb: 2, borderRadius: 0 }}>
+                                    {cartError}
+                                </Alert>
+                            )}
+
+                            {!hidePurchase && (isExpired ? (
                                 <Box sx={{ border: '2px solid #9A9A9A', p: 2, textAlign: 'center', backgroundColor: '#F5F5F5' }}>
                                     <Typography sx={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 700, color: '#6B6B6B' }}>
                                         Cet événement est terminé
@@ -272,10 +324,14 @@ function Evenement() {
                                         : loggedIn ? 'Ajouter au panier'
                                         : 'Connexion pour acheter'}
                                 </Button>
-                            )}
+                            ))}
 
-                            {!loggedIn && !isExpired && event.billets > 0 && (
-                                <Typography sx={{ fontFamily: "'DM Sans', sans-serif", fontSize: '0.8rem', color: '#9A9A9A', textAlign: 'center', mt: 1.5 }}>
+                            {!hidePurchase && !loggedIn && event.billets > 0 && (
+                                <Typography sx={{
+                                    fontFamily: "'DM Sans', sans-serif",
+                                    fontSize: '0.8rem', color: '#9A9A9A',
+                                    textAlign: 'center', mt: 1.5,
+                                }}>
                                     Un compte est requis. Votre sélection sera sauvegardée.
                                 </Typography>
                             )}
@@ -283,8 +339,6 @@ function Evenement() {
                     )}
                 </Box>
             </Box>
-        </Box>
+        </>
     );
 }
-
-export default Evenement;

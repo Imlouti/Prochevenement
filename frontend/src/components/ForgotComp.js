@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { BASE_URL } from '../utils/api';
 import { Grid2, Button, OutlinedInput, InputLabel, FormControl } from '@mui/material';
 
 export default function ForgotComp() {
@@ -33,7 +34,7 @@ export default function ForgotComp() {
           }
 
           try {
-            const response = await fetch('http://localhost:5000/auth/forgot', {
+            const response = await fetch(`${BASE_URL}/auth/forgot`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(courriel),

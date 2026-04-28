@@ -7,7 +7,7 @@ import EventBusyIcon from '@mui/icons-material/EventBusy';
 class Annuler extends Component {
     render() {
         return (
-            <div className="auth-root">
+            <div className="auth-inner">
                 <IconButton href="/Parametres" className="auth-back-btn" size="large">
                     <ArrowBackIosIcon />
                 </IconButton>
